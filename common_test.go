@@ -11,8 +11,8 @@ import (
 func Test(t *testing.T) { TestingT(t) }
 
 type BaseSuite struct {
-	workingDirectory string
-	currentFilename string
+	workingDirectory        string
+	currentFilename         string
 	currentWorkingDirectory string
 }
 
