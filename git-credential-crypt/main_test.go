@@ -22,7 +22,12 @@ func (s *MainSuite) TestMain(c *C) {
 	GitCredentialCryptCmd.Run = dummy
 	GitCredentialCryptCmd.PostRun = dummy
 	GitCredentialCryptCmd.PersistentPostRun = dummy
-	err := Execute()
-	c.Assert(err, IsNil)
+	c.Assert(
+		func() {
+			main()
+		},
+		Not(PanicMatches),
+		"*",
+	)
 	*GitCredentialCryptCmd = *oldGitCredentialCryptCmd
 }
