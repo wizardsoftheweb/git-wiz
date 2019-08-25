@@ -112,14 +112,15 @@ func (s *Site) ToUrl() string {
 	if DoPathsMatter() && "" != s.Path {
 		pathComponent = "/" + s.Path
 	}
-	fmt.Println(s.Host)
-	fmt.Println(s.Path)
-	return fmt.Sprintf(
-		"%s://%s:%s@%s%s",
-		s.Protocol,
-		url.QueryEscape(s.Username),
-		url.QueryEscape(s.Password),
-		url.QueryEscape(s.Host),
-		url.QueryEscape(pathComponent),
+	return strings.TrimSuffix(
+		fmt.Sprintf(
+			"%s://%s:%s@%s%s",
+			s.Protocol,
+			url.QueryEscape(s.Username),
+			url.QueryEscape(s.Password),
+			url.QueryEscape(s.Host),
+			url.QueryEscape(pathComponent),
+		),
+		"%2F",
 	)
 }

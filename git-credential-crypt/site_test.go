@@ -67,11 +67,11 @@ func (s *SiteSuite) TestToUrl(c *C) {
 	}{
 		{
 			[SiteNumberOfProperties]string{"https", "rick", "james", "couch.com/"},
-			"https://rick:james@couch.com%2F/",
+			"https://rick:james@couch.com",
 		},
 		{
-			[SiteNumberOfProperties]string{"http", "user", "pass", "_L.;]0s:}/!(<8B"},
-			"http://user:pass@_L.%3B%5D0s%3A%7D%2F%21%28%3C8B/",
+			[SiteNumberOfProperties]string{"http", "user", "pass", "_L.;]0s:}", "!(<8B"},
+			"http://user:pass@_L.%3B%5D0s%3A%7D%2F%21%28%3C8B",
 		},
 	}
 	for _, entry := range matrix {
