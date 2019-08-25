@@ -23,9 +23,11 @@ var _ = Suite(&SiteSuite{})
 
 func (s *SiteSuite) SetUpTest(c *C) {
 	s.site = &Site{}
+	DoPathsMatter = s.useHttpPathOverride
 }
 
 func (s *SiteSuite) TearDownTest(c *C) {
+	DoPathsMatter = PathConfigMonitor
 }
 
 func (s *SiteSuite) TestNewSiteValid(c *C) {
@@ -76,7 +78,7 @@ func (s *SiteSuite) TestParseUrl(c *C) {
 }
 
 func (s *SiteSuite) TestIsAMatchAllPermutations(c *C) {
-	for _, entry := range siteSearchTestMatrix {
+	for index, entry := range siteSearchTestMatrix {
 		s.site.sliceForSearch = entry.siteValues
 		c.Assert(
 			s.site.IsAMatch(entry.activated, entry.query),

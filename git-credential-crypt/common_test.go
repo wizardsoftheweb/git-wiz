@@ -10,13 +10,14 @@ import (
 	. "gopkg.in/check.v1"
 )
 
-func Test(t *testing.T) { TestingT(t) }
+func TestCommon(t *testing.T) { TestingT(t) }
 
 type BaseSuite struct {
 	workingDirectory        string
 	currentFilename         string
 	currentWorkingDirectory string
 	errorMessage            string
+	useHttpPathOverride     func() bool
 	command                 *cobra.Command
 	args                    []string
 }
@@ -30,6 +31,9 @@ func (s *BaseSuite) SetUpSuite(c *C) {
 	_, s.currentFilename, _, _ = runtime.Caller(0)
 	s.errorMessage = "shared file error"
 	s.command = &cobra.Command{}
+	s.useHttpPathOverride = func() bool {
+		return true
+	}
 }
 
 func (s *BaseSuite) TearDownSuite(c *C) {
