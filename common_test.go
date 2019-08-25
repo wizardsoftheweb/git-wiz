@@ -1,4 +1,4 @@
-package git_wiz
+package main
 
 import (
 	"os"

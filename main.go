@@ -1,7 +1,7 @@
-package git_wiz
+package main
 
 import "github.com/wizardsoftheweb/git-wiz/cmd"
 
 func main() {
-	_ = cmd.Execute()
+	panic(cmd.Execute())
 }
