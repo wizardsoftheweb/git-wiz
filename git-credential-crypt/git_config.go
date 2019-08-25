@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -26,6 +27,7 @@ func CollectGitConfig() string {
 func CheckPathValue(blob string) bool {
 	pathsMatter := false
 	matches := PatternConfigUseHttpPath.FindAllStringSubmatch(blob, -1)
+	fmt.Println(matches)
 	for _, match := range matches {
 		if "" != match[3] {
 			pathsMatter, _ = strconv.ParseBool(match[3])
