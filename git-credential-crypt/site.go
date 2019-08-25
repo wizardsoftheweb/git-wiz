@@ -5,7 +5,7 @@ import (
 	"regexp"
 )
 
-var PatternSiteEntry = regexp.MustCompile(`^\s*(.*?)(://)(.*):(.*)@(.*)\s*$`)
+var PatternSiteEntry = regexp.MustCompile(`^\s*(.*)://(.*):(.*)@(.*)\s*$`)
 
 type MatchPositionSite int
 
