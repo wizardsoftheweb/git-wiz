@@ -3,9 +3,10 @@ package main
 import (
 	"net/url"
 	"regexp"
+	"strings"
 )
 
-var PatternSiteEntry = regexp.MustCompile(`^\s*(.*)://(.*):(.*)@(.*)\s*$`)
+var PatternSiteEntry = regexp.MustCompile(`^\s*(.*)://(.*):(.*)@(.*)/?\s*$`)
 
 type MatchPositionSite int
 
@@ -26,9 +27,13 @@ type Site struct {
 }
 
 func NewSite(url string) *Site {
-	site := Site{Url: url}
-	site.parseUrl()
-	return &site
+	components := ExplodeUrl(url)
+	if 0 < len(components) {
+		site := Site{Url: url}
+		site.parseUrl(components)
+		return &site
+	}
+	return nil
 }
 
 func (s *Site) decodeComponent(value string) string {
@@ -36,17 +41,27 @@ func (s *Site) decodeComponent(value string) string {
 	return decoded
 }
 
-func (s *Site) parseUrl() {
-	matches := PatternSiteEntry.FindAllStringSubmatch(s.Url, -1)[0]
-	s.Protocol = s.decodeComponent(matches[PositionSiteProtocol+1])
-	s.Username = s.decodeComponent(matches[PositionSiteUsername+1])
-	s.Password = s.decodeComponent(matches[PositionSitePassword+1])
-	s.Host = s.decodeComponent(matches[PositionSiteHost+1])
+func ExplodeUrl(workingUrl string) []string {
+	matches := PatternSiteEntry.FindAllStringSubmatch(workingUrl, -1)
+	if 1 > len(matches) {
+		return []string{}
+	}
+	return matches[0]
+}
+
+func (s *Site) parseUrl(components []string) {
+	s.Protocol = s.decodeComponent(components[PositionSiteProtocol+1])
+	s.Username = s.decodeComponent(components[PositionSiteUsername+1])
+	s.Password = s.decodeComponent(components[PositionSitePassword+1])
+	s.Host = strings.TrimSuffix(
+		s.decodeComponent(components[PositionSiteHost+1]),
+		"/",
+	)
 	s.sliceForSearch = [4]string{
-		matches[PositionSiteProtocol+1],
-		matches[PositionSiteUsername+1],
-		matches[PositionSitePassword+1],
-		matches[PositionSiteHost+1],
+		s.Protocol,
+		s.Username,
+		s.Password,
+		s.Host,
 	}
 }
 
@@ -56,7 +71,7 @@ func (s *Site) IsAMatch(activated [4]bool, query [4]string) bool {
 			continue
 		}
 		if active {
-			if query[index] != s.sliceForSearch[index] {
+			if "" == query[index] || query[index] != s.sliceForSearch[index] {
 				return false
 			}
 		}

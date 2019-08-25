@@ -30,7 +30,7 @@ func (s *SiteSuite) SetUpTest(c *C) {
 func (s *SiteSuite) TearDownTest(c *C) {
 }
 
-func (s *SiteSuite) TestNewSite(c *C) {
+func (s *SiteSuite) TestNewSiteValid(c *C) {
 	input := []string{"http", "user", "password", "host"}
 	url := fmt.Sprintf(
 		"%s://%s:%s@%s",
@@ -44,6 +44,11 @@ func (s *SiteSuite) TestNewSite(c *C) {
 	c.Assert(site.Username, Equals, input[PositionSiteUsername])
 	c.Assert(site.Password, Equals, input[PositionSitePassword])
 	c.Assert(site.Host, Equals, input[PositionSiteHost])
+}
+
+func (s *SiteSuite) TestNewSiteInvalid(c *C) {
+	site := NewSite("this won't work at all")
+	c.Assert(site, IsNil)
 }
 
 func (s *SiteSuite) TestIsAMatchAllPermutations(c *C) {
