@@ -1,5 +1,7 @@
 package main
 
+import "github.com/wizardsoftheweb/git-wiz/cmd"
+
 func main() {
-	print("rad")
+	panic(cmd.Execute())
 }
