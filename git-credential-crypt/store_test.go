@@ -2,9 +2,12 @@ package main
 
 import (
 	"path/filepath"
+	"testing"
 
 	. "gopkg.in/check.v1"
 )
+
+func TestStore(t *testing.T) { TestingT(t) }
 
 type StoreSuite struct {
 	BaseSuite

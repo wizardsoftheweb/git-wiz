@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
+	"testing"
 
 	. "gopkg.in/check.v1"
 )
+
+func TestSite(t *testing.T) { TestingT(t) }
 
 type SiteSuite struct {
 	BaseSuite
@@ -20,9 +23,11 @@ var _ = Suite(&SiteSuite{})
 
 func (s *SiteSuite) SetUpTest(c *C) {
 	s.site = &Site{}
+	DoPathsMatter = s.useHttpPathOverride
 }
 
 func (s *SiteSuite) TearDownTest(c *C) {
+	DoPathsMatter = PathConfigMonitor
 }
 
 func (s *SiteSuite) TestNewSiteValid(c *C) {
@@ -35,7 +40,6 @@ func (s *SiteSuite) TestNewSiteValid(c *C) {
 		input[PositionSiteHost],
 		input[PositionSitePath],
 	)
-	fmt.Println(url)
 	site := NewSite(url)
 	c.Assert(site.Protocol, Equals, input[PositionSiteProtocol])
 	c.Assert(site.Username, Equals, input[PositionSiteUsername])
@@ -47,6 +51,30 @@ func (s *SiteSuite) TestNewSiteValid(c *C) {
 func (s *SiteSuite) TestNewSiteInvalid(c *C) {
 	site := NewSite("this won't work at all")
 	c.Assert(site, IsNil)
+}
+
+func (s *SiteSuite) TestParseUrl(c *C) {
+	matrix := []struct {
+		components []string
+		resolution [SiteNumberOfProperties]string
+	}{
+		{
+			[]string{"https", "test"},
+			[SiteNumberOfProperties]string{"https", "", "", "test", ""},
+		},
+		{
+			[]string{"https", "user@test"},
+			[SiteNumberOfProperties]string{"https", "user", "", "test", ""},
+		},
+		{
+			[]string{"https", "user:pass@test/path"},
+			[SiteNumberOfProperties]string{"https", "user", "pass", "test", "path"},
+		},
+	}
+	for _, entry := range matrix {
+		s.site.parseUrl(entry.components)
+		c.Assert(s.site.sliceForSearch, DeepEquals, entry.resolution)
+	}
 }
 
 func (s *SiteSuite) TestIsAMatchAllPermutations(c *C) {

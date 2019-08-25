@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var PatternSiteEntry = regexp.MustCompile(`^\s*(.*)://(.*):(.*)@(.*)\s*$`)
+var PatternSiteEntry = regexp.MustCompile(`^\s*(.*)://(.*)\s*$`)
 
 type MatchPositionSite int
 
@@ -55,7 +55,7 @@ func ExplodeUrl(workingUrl string) []string {
 	if 1 > len(matches) {
 		return []string{}
 	}
-	return matches[0]
+	return matches[0][1:]
 }
 
 func (s *Site) isItUsable() bool {
@@ -76,18 +76,20 @@ func (s *Site) updateSliceForSearch() {
 }
 
 func (s *Site) parseUrl(components []string) {
-	s.Protocol = s.decodeComponent(components[PositionSiteProtocol+1])
-	s.Username = s.decodeComponent(components[PositionSiteUsername+1])
-	s.Password = s.decodeComponent(components[PositionSitePassword+1])
-	tail := strings.TrimSuffix(
-		s.decodeComponent(components[PositionSiteHost+1]),
-		"/",
-	)
-	explodedTail := strings.Split(tail, "/")
-	if 2 <= len(explodedTail) {
-		s.Host = explodedTail[0]
-		s.Path = strings.Join(explodedTail[1:], "/")
-	} else if 1 == len(explodedTail) {
+	s.Protocol = s.decodeComponent(components[0])
+	explodedTail := strings.SplitN(components[1], "@", 2)
+	if 2 == len(explodedTail) {
+		frontExplosion := strings.SplitN(explodedTail[0], ":", 2)
+		s.Username = s.decodeComponent(frontExplosion[0])
+		if 2 == len(frontExplosion) {
+			s.Password = s.decodeComponent(frontExplosion[1])
+		}
+		backExplosion := strings.SplitN(explodedTail[1], "/", 2)
+		s.Host = s.decodeComponent(backExplosion[0])
+		if 2 == len(backExplosion) {
+			s.Path = s.decodeComponent(backExplosion[1])
+		}
+	} else {
 		s.Host = explodedTail[0]
 	}
 	s.updateSliceForSearch()

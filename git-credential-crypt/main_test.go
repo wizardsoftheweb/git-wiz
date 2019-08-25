@@ -1,9 +1,14 @@
 package main
 
 import (
+	"errors"
+	"testing"
+
 	"github.com/spf13/cobra"
 	. "gopkg.in/check.v1"
 )
+
+func TestRootMain(t *testing.T) { TestingT(t) }
 
 type MainSuite struct {
 	BaseSuite
@@ -30,4 +35,14 @@ func (s *MainSuite) TestMain(c *C) {
 		"*",
 	)
 	*GitCredentialCryptCmd = *oldGitCredentialCryptCmd
+}
+
+func (s *MainSuite) TestWhereErrorsGoToDie(c *C) {
+	c.Assert(
+		func() {
+			whereErrorsGoToDie(errors.New(s.errorMessage))
+		},
+		PanicMatches,
+		s.errorMessage,
+	)
 }
