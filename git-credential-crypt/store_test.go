@@ -91,3 +91,22 @@ func (s *StoreSuite) TestConstructSearchParameters(c *C) {
 		}
 	}
 }
+
+func (s *StoreSuite) TestGetNothing(c *C) {
+	incoming := make(map[string]string)
+	c.Assert(s.store.Get(incoming), IsNil)
+}
+
+func (s *StoreSuite) TestGetSuccessful(c *C) {
+	incoming := map[string]string{
+		"protocol": "https",
+		"host":     "host",
+	}
+	s.store.FileName = s.credsPath
+	s.store.Load()
+	site := s.store.Get(incoming)
+	c.Assert(site.Protocol, Equals, "https")
+	c.Assert(site.Username, Equals, "user")
+	c.Assert(site.Password, Equals, "pass")
+	c.Assert(site.Host, Equals, "host")
+}
