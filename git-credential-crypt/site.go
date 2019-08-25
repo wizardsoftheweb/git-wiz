@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/url"
 	"regexp"
 	"strings"
@@ -37,7 +38,7 @@ func NewSite(url string) *Site {
 }
 
 func (s *Site) decodeComponent(value string) string {
-	decoded, _ := url.QueryUnescape(value)
+	decoded, _ := url.PathUnescape(value)
 	return decoded
 }
 
@@ -77,4 +78,14 @@ func (s *Site) IsAMatch(activated [4]bool, query [4]string) bool {
 		}
 	}
 	return true
+}
+
+func (s *Site) ToUrl() string {
+	return fmt.Sprintf(
+		"%s://%s:%s@%s",
+		s.Protocol,
+		url.PathEscape(s.Username),
+		url.PathEscape(s.Password),
+		url.PathEscape(s.Host),
+	)
 }
