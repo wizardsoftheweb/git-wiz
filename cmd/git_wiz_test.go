@@ -1,9 +1,13 @@
 package cmd
 
 import (
+	"testing"
+
 	"github.com/spf13/cobra"
 	. "gopkg.in/check.v1"
 )
+
+func TestGitWiz(t *testing.T) { TestingT(t) }
 
 type GitWizSuite struct {
 	BaseSuite

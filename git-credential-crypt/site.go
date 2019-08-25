@@ -33,7 +33,6 @@ type Site struct {
 
 func NewSite(url string) *Site {
 	components := ExplodeUrl(url)
-	fmt.Println(components)
 	if 0 < len(components) {
 		site := Site{Url: url}
 		site.parseUrl(components)

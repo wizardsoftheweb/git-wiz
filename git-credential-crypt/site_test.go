@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
+	"testing"
 
 	. "gopkg.in/check.v1"
 )
+
+func TestSite(t *testing.T) { TestingT(t) }
 
 type SiteSuite struct {
 	BaseSuite
@@ -35,7 +38,6 @@ func (s *SiteSuite) TestNewSiteValid(c *C) {
 		input[PositionSiteHost],
 		input[PositionSitePath],
 	)
-	fmt.Println(url)
 	site := NewSite(url)
 	c.Assert(site.Protocol, Equals, input[PositionSiteProtocol])
 	c.Assert(site.Username, Equals, input[PositionSiteUsername])

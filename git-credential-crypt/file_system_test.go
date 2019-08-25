@@ -6,9 +6,12 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"testing"
 
 	. "gopkg.in/check.v1"
 )
+
+func TestFileSystem(t *testing.T) { TestingT(t) }
 
 type FileSystemSuite struct {
 	BaseSuite

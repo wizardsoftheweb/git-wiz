@@ -1,8 +1,9 @@
 package main
 
 func main() {
+	// CollectGitConfig()
 	panic(Execute())
-
+	// ParseSearchInput("")
 	// store := NewStoreFromDisk("~/.git-credentials")
 	// store.FileName = "~/.git-credentials2"
 	// store.Write()
@@ -12,4 +13,10 @@ func main() {
 	// }
 	// site := store.Get(map[string]string{"host": "api.*.com"})
 	// fmt.Println(site)
+}
+
+func whereErrorsGoToDie(err error) {
+	if nil != err {
+		panic(err)
+	}
 }

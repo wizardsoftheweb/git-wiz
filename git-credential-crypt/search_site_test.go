@@ -2,9 +2,12 @@ package main
 
 import (
 	"strings"
+	"testing"
 
 	. "gopkg.in/check.v1"
 )
+
+func TestSearchSite(t *testing.T) { TestingT(t) }
 
 type SearchSiteSuite struct {
 	BaseSuite

@@ -1,11 +1,15 @@
 package main
 
 import (
+	"testing"
+
 	"github.com/spf13/cobra"
 	. "gopkg.in/check.v1"
 
 	"github.com/wizardsoftheweb/git-wiz/cmd"
 )
+
+func TestRootMain(t *testing.T) { TestingT(t) }
 
 type MainSuite struct {
 	BaseSuite

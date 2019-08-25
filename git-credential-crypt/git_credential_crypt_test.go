@@ -1,9 +1,13 @@
 package main
 
 import (
+	"testing"
+
 	"github.com/spf13/cobra"
 	. "gopkg.in/check.v1"
 )
+
+func TestGitCredentialCrypt(t *testing.T) { TestingT(t) }
 
 type GitCredentialCryptSuite struct {
 	BaseSuite
