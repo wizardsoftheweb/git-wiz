@@ -1,29 +1,34 @@
 package main
 
 import (
+	"fmt"
 	"net/url"
 	"regexp"
 	"strings"
 )
 
-var PatternSiteEntry = regexp.MustCompile(`^\s*(.*)://(.*):(.*)@(.*)/?\s*$`)
+var PatternSiteEntry = regexp.MustCompile(`^\s*(.*)://(.*):(.*)@(.*)\s*$`)
 
 type MatchPositionSite int
+
+const SiteNumberOfProperties = 5
 
 const (
 	PositionSiteProtocol MatchPositionSite = iota
 	PositionSiteUsername
 	PositionSitePassword
 	PositionSiteHost
+	PositionSitePath
 )
 
 type Site struct {
 	Protocol       string
-	Host           string
 	Username       string
 	Password       string
+	Host           string
+	Path           string
 	Url            string
-	sliceForSearch [4]string
+	sliceForSearch [SiteNumberOfProperties]string
 }
 
 func NewSite(url string) *Site {
@@ -34,6 +39,10 @@ func NewSite(url string) *Site {
 		return &site
 	}
 	return nil
+}
+
+func (s *Site) isPathOn() bool {
+	return DoPathsMatter() && ("https" == s.Protocol || "http" == s.Protocol)
 }
 
 func (s *Site) decodeComponent(value string) string {
@@ -49,25 +58,44 @@ func ExplodeUrl(workingUrl string) []string {
 	return matches[0]
 }
 
-func (s *Site) parseUrl(components []string) {
-	s.Protocol = s.decodeComponent(components[PositionSiteProtocol+1])
-	s.Username = s.decodeComponent(components[PositionSiteUsername+1])
-	s.Password = s.decodeComponent(components[PositionSitePassword+1])
-	s.Host = strings.TrimSuffix(
-		s.decodeComponent(components[PositionSiteHost+1]),
-		"/",
-	)
-	s.sliceForSearch = [4]string{
+func (s *Site) isItUsable() bool {
+	return "" != s.Protocol &&
+		("" != s.Host || "" != s.Path) &&
+		"" != s.Username &&
+		"" != s.Password
+}
+
+func (s *Site) updateSliceForSearch() {
+	s.sliceForSearch = [SiteNumberOfProperties]string{
 		s.Protocol,
 		s.Username,
 		s.Password,
 		s.Host,
+		s.Path,
 	}
 }
 
-func (s *Site) IsAMatch(activated [4]bool, query [4]string) bool {
+func (s *Site) parseUrl(components []string) {
+	s.Protocol = s.decodeComponent(components[PositionSiteProtocol+1])
+	s.Username = s.decodeComponent(components[PositionSiteUsername+1])
+	s.Password = s.decodeComponent(components[PositionSitePassword+1])
+	tail := strings.TrimSuffix(
+		s.decodeComponent(components[PositionSiteHost+1]),
+		"/",
+	)
+	explodedTail := strings.Split(tail, "/")
+	if 2 <= len(explodedTail) {
+		s.Host = explodedTail[0]
+		s.Path = strings.Join(explodedTail[1:], "/")
+	} else if 1 == len(explodedTail) {
+		s.Host = explodedTail[0]
+	}
+	s.updateSliceForSearch()
+}
+
+func (s *Site) IsAMatch(activated [SiteNumberOfProperties]bool, query [SiteNumberOfProperties]string) bool {
 	for index, active := range activated {
-		if int(PositionSitePassword) == index {
+		if int(PositionSitePassword) == index || (int(PositionSitePath) == index && !DoPathsMatter()) {
 			continue
 		}
 		if active {
@@ -77,4 +105,22 @@ func (s *Site) IsAMatch(activated [4]bool, query [4]string) bool {
 		}
 	}
 	return true
+}
+
+func (s *Site) ToUrl() string {
+	pathComponent := ""
+	if DoPathsMatter() && "" != s.Path {
+		pathComponent = "/" + s.Path
+	}
+	return strings.TrimSuffix(
+		fmt.Sprintf(
+			"%s://%s:%s@%s%s",
+			s.Protocol,
+			url.QueryEscape(s.Username),
+			url.QueryEscape(s.Password),
+			url.QueryEscape(s.Host),
+			url.QueryEscape(pathComponent),
+		),
+		"%2F",
+	)
 }

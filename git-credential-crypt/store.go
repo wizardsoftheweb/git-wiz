@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-var UrlComponents = []string{"protocol", "username", "password", "host"}
+var UrlComponents = []string{"protocol", "username", "password", "host", "path"}
 
 var DefaultStoreFileLocations = [][]string{
 	{"~", ".git-credentials"},
@@ -20,7 +20,7 @@ type Store struct {
 }
 
 func NewStoreFromDisk(filename string) *Store {
-	cleanedFilename, _ := tidyPath(filename)
+	cleanedFilename, _ := pathTidier(filename)
 	store := Store{
 		FileName: cleanedFilename,
 	}
@@ -37,7 +37,7 @@ func NewStoreFromDisk(filename string) *Store {
 // }
 
 func (s *Store) AddToAvailableFiles(pathComponents ...string) {
-	cleanPath, _ := tidyPath(pathComponents...)
+	cleanPath, _ := pathTidier(pathComponents...)
 	if DoesPathExist(cleanPath) {
 		s.availableFiles = append(s.availableFiles, cleanPath)
 	}
@@ -66,9 +66,24 @@ func (s *Store) Load() {
 	}
 }
 
-func (s *Store) constructSearchParameters(incoming map[string]string) ([4]bool, [4]string) {
-	activated := [4]bool{}
-	query := [4]string{}
+func (s *Store) Write() {
+	s.FileName, _ = pathTidier(s.FileName)
+	var siteLines []string
+	for _, site := range s.Sites {
+		if site.isItUsable() {
+			siteLines = append(siteLines, site.ToUrl())
+		}
+	}
+	blob := strings.Join(siteLines, "\n")
+	err := WriteFile([]byte(blob+"\n"), 0600, s.FileName)
+	if nil != err {
+		panic(err)
+	}
+}
+
+func (s *Store) constructSearchParameters(incoming map[string]string) ([SiteNumberOfProperties]bool, [SiteNumberOfProperties]string) {
+	activated := [SiteNumberOfProperties]bool{}
+	query := [SiteNumberOfProperties]string{}
 	for index, value := range UrlComponents {
 		input, ok := incoming[value]
 		activated[index] = ok
@@ -79,6 +94,7 @@ func (s *Store) constructSearchParameters(incoming map[string]string) ([4]bool, 
 		}
 	}
 	query[PositionSiteHost] = strings.TrimSuffix(query[PositionSiteHost], "/")
+	query[PositionSitePath] = strings.TrimSuffix(query[PositionSitePath], "/")
 	return activated, query
 }
 

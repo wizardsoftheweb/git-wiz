@@ -4,6 +4,8 @@ func main() {
 	panic(Execute())
 
 	// store := NewStoreFromDisk("~/.git-credentials")
+	// store.FileName = "~/.git-credentials2"
+	// store.Write()
 	// fmt.Println(store)
 	// for _, site := range store.Sites {
 	// 	fmt.Println(site)
