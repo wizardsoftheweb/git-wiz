@@ -18,8 +18,7 @@ var PatternConfigUseHttpPath = regexp.MustCompile(`(?mi)^credential\.(.*?)\.*(us
 
 func CollectGitConfig() string {
 	commandArgs := []string{"config", "--get-regexp", "credential*"}
-	result, err := exec.Command("git", commandArgs...).CombinedOutput()
-	whereErrorsGoToDie(err)
+	result, _ := exec.Command("git", commandArgs...).CombinedOutput()
 	return string(result)
 }
 
