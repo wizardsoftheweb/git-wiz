@@ -1,4 +1,4 @@
-package git_wiz
+package cmd
 
 func main() {
 	_ = Execute()

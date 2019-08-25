@@ -1,4 +1,4 @@
-package main
+package git_wiz
 
 import . "gopkg.in/check.v1"
 

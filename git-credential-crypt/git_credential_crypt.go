@@ -1,4 +1,4 @@
-package git_credential_crypt
+package main
 
 import (
 	"github.com/spf13/cobra"
