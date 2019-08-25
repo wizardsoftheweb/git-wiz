@@ -108,3 +108,17 @@ func (s *FileSystemSuite) TestWriteFileSuccess(c *C) {
 	stats, _ := os.Stat(s.fileToWrite)
 	c.Assert(stats.Mode().String(), Equals, perm.String())
 }
+
+func (s *FileSystemSuite) TestDoesPathExistNo(c *C) {
+	newPath := s.currentFilename[1:]
+	c.Assert(DoesPathExist(newPath), Equals, false)
+}
+
+func (s *FileSystemSuite) TestDoesPathExistYes(c *C) {
+	c.Assert(DoesPathExist(s.currentFilename), Equals, true)
+}
+
+func (s *FileSystemSuite) TestDoesPathExistBadPath(c *C) {
+	pathTidier = s.BrokenPathTidier
+	c.Assert(DoesPathExist(s.currentFilename), Equals, false)
+}
