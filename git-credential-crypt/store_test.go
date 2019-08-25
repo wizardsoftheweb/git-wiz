@@ -22,6 +22,7 @@ func (s *StoreSuite) SetUpTest(c *C) {
 }
 
 func (s *StoreSuite) TearDownTest(c *C) {
+	pathTidier = tidyPath
 }
 
 func (s *StoreSuite) TestNewFromDisk(c *C) {
@@ -109,4 +110,23 @@ func (s *StoreSuite) TestGetSuccessful(c *C) {
 	c.Assert(site.Username, Equals, "user")
 	c.Assert(site.Password, Equals, "pass")
 	c.Assert(site.Host, Equals, "host")
+}
+
+func (s *StoreSuite) TestWriteCorrectly(c *C) {
+	s.store = NewStoreFromDisk(s.credsPath)
+	s.store.FileName = filepath.Join(s.workingDirectory, "credentials")
+	s.store.Write()
+}
+
+func (s *StoreSuite) TestWriteFailure(c *C) {
+	s.store = NewStoreFromDisk(s.credsPath)
+	pathTidier = s.brokenPathTidier
+	s.store.FileName = s.currentFilename[1:]
+	c.Assert(
+		func() {
+			s.store.Write()
+		},
+		PanicMatches,
+		s.errorMessage,
+	)
 }
