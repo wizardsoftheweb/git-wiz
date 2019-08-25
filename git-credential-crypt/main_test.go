@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -34,4 +35,14 @@ func (s *MainSuite) TestMain(c *C) {
 		"*",
 	)
 	*GitCredentialCryptCmd = *oldGitCredentialCryptCmd
+}
+
+func (s *MainSuite) TestWhereErrorsGoToDie(c *C) {
+	c.Assert(
+		func() {
+			whereErrorsGoToDie(errors.New(s.errorMessage))
+		},
+		PanicMatches,
+		s.errorMessage,
+	)
 }
