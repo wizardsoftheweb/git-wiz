@@ -3,9 +3,10 @@ package main
 import (
 	"net/url"
 	"regexp"
+	"strings"
 )
 
-var PatternSiteEntry = regexp.MustCompile(`^\s*(.*)://(.*):(.*)@(.*)\s*$`)
+var PatternSiteEntry = regexp.MustCompile(`^\s*(.*)://(.*):(.*)@(.*)/?\s*$`)
 
 type MatchPositionSite int
 
@@ -52,12 +53,15 @@ func (s *Site) parseUrl(components []string) {
 	s.Protocol = s.decodeComponent(components[PositionSiteProtocol+1])
 	s.Username = s.decodeComponent(components[PositionSiteUsername+1])
 	s.Password = s.decodeComponent(components[PositionSitePassword+1])
-	s.Host = s.decodeComponent(components[PositionSiteHost+1])
+	s.Host = strings.TrimSuffix(
+		s.decodeComponent(components[PositionSiteHost+1]),
+		"/",
+	)
 	s.sliceForSearch = [4]string{
-		components[PositionSiteProtocol+1],
-		components[PositionSiteUsername+1],
-		components[PositionSitePassword+1],
-		components[PositionSiteHost+1],
+		s.Protocol,
+		s.Username,
+		s.Password,
+		s.Host,
 	}
 }
 
