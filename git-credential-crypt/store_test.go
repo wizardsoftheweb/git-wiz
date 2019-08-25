@@ -24,6 +24,12 @@ func (s *StoreSuite) SetUpTest(c *C) {
 func (s *StoreSuite) TearDownTest(c *C) {
 }
 
+func (s *StoreSuite) TestNewFromDisk(c *C) {
+	store := NewStoreFromDisk(s.credsPath)
+	c.Assert(0 < len(store.Sites), Equals, true)
+
+}
+
 func (s *StoreSuite) TestLoadDne(c *C) {
 	s.store.FileName = s.currentFilename[1:]
 	c.Assert(func() { s.store.Load() }, PanicMatches, "*no such file or directory")
