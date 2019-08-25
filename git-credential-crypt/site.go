@@ -38,7 +38,7 @@ func NewSite(url string) *Site {
 }
 
 func (s *Site) decodeComponent(value string) string {
-	decoded, _ := url.PathUnescape(value)
+	decoded, _ := url.QueryUnescape(value)
 	return decoded
 }
 
@@ -84,8 +84,8 @@ func (s *Site) ToUrl() string {
 	return fmt.Sprintf(
 		"%s://%s:%s@%s",
 		s.Protocol,
-		url.PathEscape(s.Username),
-		url.PathEscape(s.Password),
-		url.PathEscape(s.Host),
+		url.QueryEscape(s.Username),
+		url.QueryEscape(s.Password),
+		url.QueryEscape(s.Host),
 	)
 }
