@@ -58,7 +58,7 @@ func ExplodeUrl(workingUrl string) []string {
 	return matches[0]
 }
 
-func (s *Site) doesItWork() bool {
+func (s *Site) isItUsable() bool {
 	return "" != s.Protocol &&
 		("" != s.Host || "" != s.Path) &&
 		"" != s.Username &&

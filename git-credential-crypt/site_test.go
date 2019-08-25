@@ -87,15 +87,15 @@ func (s *SiteSuite) TestToUrl(c *C) {
 
 func (s *SiteSuite) TestDoesItWork(c *C) {
 	site := Site{}
-	c.Assert(site.doesItWork(), Equals, false)
+	c.Assert(site.isItUsable(), Equals, false)
 	site.Protocol = "https"
-	c.Assert(site.doesItWork(), Equals, false)
+	c.Assert(site.isItUsable(), Equals, false)
 	site.Username = "rick"
-	c.Assert(site.doesItWork(), Equals, false)
+	c.Assert(site.isItUsable(), Equals, false)
 	site.Password = "james"
-	c.Assert(site.doesItWork(), Equals, false)
+	c.Assert(site.isItUsable(), Equals, false)
 	site.Host = "cool.beans"
-	c.Assert(site.doesItWork(), Equals, true)
+	c.Assert(site.isItUsable(), Equals, true)
 }
 
 func (s *SiteSuite) TestIsPathOn(c *C) {
