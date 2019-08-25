@@ -51,3 +51,13 @@ func WriteFile(contents []byte, permissions os.FileMode, pathComponents ...strin
 	}
 	return ioutil.WriteFile(combinedPath, contents, permissions)
 }
+
+func DoesPathExist(pathComponents ...string) bool {
+	combinedPath, err := pathTidier(pathComponents...)
+	if nil != err {
+		return false
+	}
+	_, err = os.Stat(combinedPath)
+	return !os.IsNotExist(err)
+
+}
