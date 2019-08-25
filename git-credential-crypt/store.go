@@ -66,9 +66,9 @@ func (s *Store) Load() {
 	}
 }
 
-func (s *Store) constructSearchParameters(incoming map[string]string) ([4]bool, [4]string) {
-	activated := [4]bool{}
-	query := [4]string{}
+func (s *Store) constructSearchParameters(incoming map[string]string) ([SiteNumberOfProperties]bool, [SiteNumberOfProperties]string) {
+	activated := [SiteNumberOfProperties]bool{}
+	query := [SiteNumberOfProperties]string{}
 	for index, value := range UrlComponents {
 		input, ok := incoming[value]
 		activated[index] = ok
