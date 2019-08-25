@@ -49,6 +49,30 @@ func (s *SiteSuite) TestNewSiteInvalid(c *C) {
 	c.Assert(site, IsNil)
 }
 
+func (s *SiteSuite) TestParseUrl(c *C) {
+	matrix := []struct {
+		components []string
+		resolution [SiteNumberOfProperties]string
+	}{
+		{
+			[]string{"https", "test"},
+			[SiteNumberOfProperties]string{"https", "", "", "test", ""},
+		},
+		{
+			[]string{"https", "user@test"},
+			[SiteNumberOfProperties]string{"https", "user", "", "test", ""},
+		},
+		{
+			[]string{"https", "user:pass@test/path"},
+			[SiteNumberOfProperties]string{"https", "user", "pass", "test", "path"},
+		},
+	}
+	for _, entry := range matrix {
+		s.site.parseUrl(entry.components)
+		c.Assert(s.site.sliceForSearch, DeepEquals, entry.resolution)
+	}
+}
+
 func (s *SiteSuite) TestIsAMatchAllPermutations(c *C) {
 	for _, entry := range siteSearchTestMatrix {
 		s.site.sliceForSearch = entry.siteValues
