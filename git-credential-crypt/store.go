@@ -75,7 +75,7 @@ func (s *Store) Write() {
 		}
 	}
 	blob := strings.Join(siteLines, "\n")
-	err := WriteFile([]byte(blob), 0600, s.FileName)
+	err := WriteFile([]byte(blob+"\n"), 0600, s.FileName)
 	if nil != err {
 		panic(err)
 	}
