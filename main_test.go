@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -13,6 +14,7 @@ func TestRootMain(t *testing.T) { TestingT(t) }
 
 type MainSuite struct {
 	BaseSuite
+	errorMessage string
 }
 
 var _ = Suite(&MainSuite{})
@@ -36,4 +38,15 @@ func (s *MainSuite) TestMain(c *C) {
 		"*",
 	)
 	*cmd.GitWizCmd = *oldGitWizCmd
+}
+
+func (s *MainSuite) TestWhereErrorsGoToDie(c *C) {
+	s.errorMessage = "qqq"
+	c.Assert(
+		func() {
+			whereErrorsGoToDie(errors.New(s.errorMessage))
+		},
+		PanicMatches,
+		s.errorMessage,
+	)
 }

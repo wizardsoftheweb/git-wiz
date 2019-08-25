@@ -3,5 +3,12 @@ package main
 import "github.com/wizardsoftheweb/git-wiz/cmd"
 
 func main() {
-	panic(cmd.Execute())
+	err := cmd.Execute()
+	whereErrorsGoToDie(err)
+}
+
+func whereErrorsGoToDie(err error) {
+	if nil != err {
+		panic(err)
+	}
 }
