@@ -1,4 +1,4 @@
-package cmd
+package git_wiz
 
 import (
 	"github.com/spf13/cobra"
