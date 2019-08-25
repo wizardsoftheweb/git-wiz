@@ -7,13 +7,11 @@ import (
 	"os/user"
 	"path/filepath"
 
-	"github.com/pkg/errors"
 	. "gopkg.in/check.v1"
 )
 
 type FileSystemSuite struct {
 	BaseSuite
-	errorMessage  string
 	fileContents  []byte
 	fileToWrite   string
 	homeDirectory string
@@ -22,15 +20,10 @@ type FileSystemSuite struct {
 var currentUser, _ = user.Current()
 
 var _ = Suite(&FileSystemSuite{
-	errorMessage:  "shared file error",
 	fileContents:  []byte("test data"),
 	fileToWrite:   "",
 	homeDirectory: currentUser.HomeDir,
 })
-
-func (s *FileSystemSuite) BrokenPathTidier(input ...string) (string, error) {
-	return "", errors.New(s.errorMessage)
-}
 
 func (s *FileSystemSuite) SetUpTest(c *C) {
 	s.fileToWrite = filepath.Join(s.workingDirectory, "test.file")
@@ -76,7 +69,7 @@ func (s *FileSystemSuite) TestEnsureDirectoryExistsCreatesDirectories(c *C) {
 }
 
 func (s *FileSystemSuite) TestLoadFilePathError(c *C) {
-	pathTidier = s.BrokenPathTidier
+	pathTidier = s.brokenPathTidier
 	_, err := LoadFile(s.workingDirectory)
 	c.Assert(err, ErrorMatches, s.errorMessage)
 }
@@ -93,7 +86,7 @@ func (s *FileSystemSuite) TestLoadFileNonEmpty(c *C) {
 }
 
 func (s *FileSystemSuite) TestWriteFilePathError(c *C) {
-	pathTidier = s.BrokenPathTidier
+	pathTidier = s.brokenPathTidier
 	err := WriteFile(s.fileContents, 0600, s.workingDirectory)
 	c.Assert(err, ErrorMatches, s.errorMessage)
 }
@@ -119,6 +112,6 @@ func (s *FileSystemSuite) TestDoesPathExistYes(c *C) {
 }
 
 func (s *FileSystemSuite) TestDoesPathExistBadPath(c *C) {
-	pathTidier = s.BrokenPathTidier
+	pathTidier = s.brokenPathTidier
 	c.Assert(DoesPathExist(s.currentFilename), Equals, false)
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"strings"
 )
@@ -21,7 +20,7 @@ type Store struct {
 }
 
 func NewStoreFromDisk(filename string) *Store {
-	cleanedFilename, _ := tidyPath(filename)
+	cleanedFilename, _ := pathTidier(filename)
 	store := Store{
 		FileName: cleanedFilename,
 	}
@@ -38,7 +37,7 @@ func NewStoreFromDisk(filename string) *Store {
 // }
 
 func (s *Store) AddToAvailableFiles(pathComponents ...string) {
-	cleanPath, _ := tidyPath(pathComponents...)
+	cleanPath, _ := pathTidier(pathComponents...)
 	if DoesPathExist(cleanPath) {
 		s.availableFiles = append(s.availableFiles, cleanPath)
 	}
@@ -68,14 +67,18 @@ func (s *Store) Load() {
 }
 
 func (s *Store) Write() {
-	s.FileName, _ = tidyPath(s.FileName)
+	s.FileName, _ = pathTidier(s.FileName)
 	var siteLines []string
 	for _, site := range s.Sites {
 		if site.isItUsable() {
 			siteLines = append(siteLines, site.ToUrl())
 		}
 	}
-	fmt.Println(strings.Join(siteLines, "\n"))
+	blob := strings.Join(siteLines, "\n")
+	err := WriteFile([]byte(blob), 0600, s.FileName)
+	if nil != err {
+		panic(err)
+	}
 }
 
 func (s *Store) constructSearchParameters(incoming map[string]string) ([SiteNumberOfProperties]bool, [SiteNumberOfProperties]string) {
