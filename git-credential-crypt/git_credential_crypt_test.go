@@ -5,13 +5,13 @@ import (
 	. "gopkg.in/check.v1"
 )
 
-type GitWizSuite struct {
+type GitCredentialCryptSuite struct {
 	BaseSuite
 }
 
-var _ = Suite(&GitWizSuite{})
+var _ = Suite(&GitCredentialCryptSuite{})
 
-func (s *GitWizSuite) TestExecute(c *C) {
+func (s *GitCredentialCryptSuite) TestExecute(c *C) {
 	var oldGitCredentialCryptCmd = &cobra.Command{}
 	*oldGitCredentialCryptCmd = *GitCredentialCryptCmd
 	dummy := func(cmd *cobra.Command, args []string) {}
