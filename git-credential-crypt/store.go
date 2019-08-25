@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 )
@@ -64,6 +65,17 @@ func (s *Store) Load() {
 			s.Sites = append(s.Sites, site)
 		}
 	}
+}
+
+func (s *Store) Write() {
+	s.FileName, _ = tidyPath(s.FileName)
+	var siteLines []string
+	for _, site := range s.Sites {
+		if site.isItUsable() {
+			siteLines = append(siteLines, site.ToUrl())
+		}
+	}
+	fmt.Println(strings.Join(siteLines, "\n"))
 }
 
 func (s *Store) constructSearchParameters(incoming map[string]string) ([SiteNumberOfProperties]bool, [SiteNumberOfProperties]string) {

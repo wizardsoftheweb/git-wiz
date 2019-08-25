@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var PatternSiteEntry = regexp.MustCompile(`^\s*(.*)://(.*):(.*)@([^/\n]*)/?(.*)\s*$`)
+var PatternSiteEntry = regexp.MustCompile(`^\s*(.*)://(.*):(.*)@(.*)\s*$`)
 
 type MatchPositionSite int
 
@@ -42,7 +42,7 @@ func NewSite(url string) *Site {
 }
 
 func (s *Site) isPathOn() bool {
-	return strings.Contains(s.Protocol, "http") && DoPathsMatter()
+	return DoPathsMatter() && ("https" == s.Protocol || "http" == s.Protocol)
 }
 
 func (s *Site) decodeComponent(value string) string {
@@ -79,14 +79,17 @@ func (s *Site) parseUrl(components []string) {
 	s.Protocol = s.decodeComponent(components[PositionSiteProtocol+1])
 	s.Username = s.decodeComponent(components[PositionSiteUsername+1])
 	s.Password = s.decodeComponent(components[PositionSitePassword+1])
-	s.Host = strings.TrimSuffix(
+	tail := strings.TrimSuffix(
 		s.decodeComponent(components[PositionSiteHost+1]),
 		"/",
 	)
-	s.Path = strings.TrimSuffix(
-		s.decodeComponent(components[PositionSitePath+1]),
-		"/",
-	)
+	explodedTail := strings.Split(tail, "/")
+	if 2 <= len(explodedTail) {
+		s.Host = explodedTail[0]
+		s.Path = strings.Join(explodedTail[1:], "/")
+	} else if 1 == len(explodedTail) {
+		s.Host = explodedTail[0]
+	}
 	s.updateSliceForSearch()
 }
 
@@ -105,12 +108,18 @@ func (s *Site) IsAMatch(activated [SiteNumberOfProperties]bool, query [SiteNumbe
 }
 
 func (s *Site) ToUrl() string {
+	pathComponent := ""
+	if DoPathsMatter() && "" != s.Path {
+		pathComponent = "/" + s.Path
+	}
+	fmt.Println(s.Host)
+	fmt.Println(s.Path)
 	return fmt.Sprintf(
-		"%s://%s:%s@%s/%s",
+		"%s://%s:%s@%s%s",
 		s.Protocol,
 		url.QueryEscape(s.Username),
 		url.QueryEscape(s.Password),
 		url.QueryEscape(s.Host),
-		url.QueryEscape(s.Path),
+		url.QueryEscape(pathComponent),
 	)
 }
