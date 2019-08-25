@@ -31,7 +31,10 @@ func (s *Store) Load() {
 		panic(err)
 	}
 	contents := strings.Split(string(rawContents), "\n")
-	for index, url := range contents {
-		s.Sites[index] = NewSite(url)
+	for _, url := range contents {
+		if "" == url {
+			continue
+		}
+		s.Sites = append(s.Sites, NewSite(url))
 	}
 }
