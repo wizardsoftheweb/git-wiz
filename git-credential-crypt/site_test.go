@@ -22,14 +22,14 @@ func (s *SiteSuite) TestNewSite(c *C) {
 	input := []string{"http", "user", "password", "host"}
 	url := fmt.Sprintf(
 		"%s://%s:%s@%s",
-		input[PositionSiteProtocol-1],
-		input[PositionSiteUsername-1],
-		input[PositionSitePassword-1],
-		input[PositionSiteHost-1],
+		input[PositionSiteProtocol],
+		input[PositionSiteUsername],
+		input[PositionSitePassword],
+		input[PositionSiteHost],
 	)
 	site := NewSite(url)
-	c.Assert(site.Protocol, Equals, input[PositionSiteProtocol-1])
-	c.Assert(site.Username, Equals, input[PositionSiteUsername-1])
-	c.Assert(site.Password, Equals, input[PositionSitePassword-1])
-	c.Assert(site.Host, Equals, input[PositionSiteHost-1])
+	c.Assert(site.Protocol, Equals, input[PositionSiteProtocol])
+	c.Assert(site.Username, Equals, input[PositionSiteUsername])
+	c.Assert(site.Password, Equals, input[PositionSitePassword])
+	c.Assert(site.Host, Equals, input[PositionSiteHost])
 }

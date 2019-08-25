@@ -10,7 +10,7 @@ var PatternSiteEntry = regexp.MustCompile(`^\s*(.*)://(.*):(.*)@(.*)\s*$`)
 type MatchPositionSite int
 
 const (
-	PositionSiteProtocol MatchPositionSite = iota + 1
+	PositionSiteProtocol MatchPositionSite = iota
 	PositionSiteUsername
 	PositionSitePassword
 	PositionSiteHost
@@ -37,8 +37,8 @@ func (s *Site) decodeComponent(value string) string {
 
 func (s *Site) parseUrl() {
 	matches := PatternSiteEntry.FindAllStringSubmatch(s.Url, -1)[0]
-	s.Protocol = s.decodeComponent(matches[PositionSiteProtocol])
-	s.Username = s.decodeComponent(matches[PositionSiteUsername])
-	s.Password = s.decodeComponent(matches[PositionSitePassword])
-	s.Host = s.decodeComponent(matches[PositionSiteHost])
+	s.Protocol = s.decodeComponent(matches[PositionSiteProtocol+1])
+	s.Username = s.decodeComponent(matches[PositionSiteUsername+1])
+	s.Password = s.decodeComponent(matches[PositionSitePassword+1])
+	s.Host = s.decodeComponent(matches[PositionSiteHost+1])
 }
