@@ -42,3 +42,23 @@ func (s *StoreSuite) TestLoadExists(c *C) {
 	c.Assert(0 < len(s.store.Sites), Equals, true)
 
 }
+
+func (s *StoreSuite) TestAddToAvailableFilesNotToday(c *C) {
+	c.Assert(s.store.availableFiles, HasLen, 0)
+	s.store.AddToAvailableFiles(s.currentFilename[1:])
+	c.Assert(s.store.availableFiles, HasLen, 0)
+}
+
+func (s *StoreSuite) TestAddToAvailableFilesExists(c *C) {
+	c.Assert(s.store.availableFiles, HasLen, 0)
+	s.store.AddToAvailableFiles(s.currentFilename)
+	c.Assert(s.store.availableFiles, HasLen, 1)
+}
+
+func (s *StoreSuite) TestVerifyDefaultFiles(c *C) {
+	c.Assert(
+		s.store.verifyDefaultFiles,
+		Not(Panics),
+		"*",
+	)
+}
