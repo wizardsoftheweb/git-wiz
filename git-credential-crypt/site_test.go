@@ -78,7 +78,7 @@ func (s *SiteSuite) TestParseUrl(c *C) {
 }
 
 func (s *SiteSuite) TestIsAMatchAllPermutations(c *C) {
-	for index, entry := range siteSearchTestMatrix {
+	for _, entry := range siteSearchTestMatrix {
 		s.site.sliceForSearch = entry.siteValues
 		c.Assert(
 			s.site.IsAMatch(entry.activated, entry.query),
