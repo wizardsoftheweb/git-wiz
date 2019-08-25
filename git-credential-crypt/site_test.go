@@ -61,3 +61,27 @@ func (s *SiteSuite) TestIsAMatchAllPermutations(c *C) {
 		)
 	}
 }
+
+func (s *SiteSuite) TestToUrl(c *C) {
+	matrix := []struct {
+		urlComponents [4]string
+		finalUrl      string
+	}{
+		{
+			[4]string{"https", "rick", "james", "couch.com/"},
+			"https://rick:james@couch.com%2F",
+		},
+		{
+			[4]string{"http", "user", "pass", "_L.;]0s:}/!(<8B"},
+			"http://user:pass@_L.%3B%5D0s%3A%7D%2F%21%28%3C8B",
+		},
+	}
+	for _, entry := range matrix {
+		s.site.Protocol = entry.urlComponents[PositionSiteProtocol]
+		s.site.Username = entry.urlComponents[PositionSiteUsername]
+		s.site.Password = entry.urlComponents[PositionSitePassword]
+		s.site.Host = entry.urlComponents[PositionSiteHost]
+		c.Assert(s.site.ToUrl(), Equals, entry.finalUrl)
+	}
+
+}
