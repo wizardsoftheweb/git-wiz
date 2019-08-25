@@ -56,7 +56,7 @@ func (s *Site) IsAMatch(activated [4]bool, query [4]string) bool {
 			continue
 		}
 		if active {
-			if query[index] != s.sliceForSearch[index] {
+			if "" == query[index] || query[index] != s.sliceForSearch[index] {
 				return false
 			}
 		}
