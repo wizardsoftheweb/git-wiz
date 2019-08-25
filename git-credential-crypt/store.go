@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var UrlComponents = []string{"protocol", "username", "password", "host"}
+
 var DefaultStoreFileLocations = [][]string{
 	{"~", ".git-credentials"},
 	{os.Getenv("XDG_CONFIG_HOME"), "git", "credentials"},
@@ -62,4 +64,30 @@ func (s *Store) Load() {
 			s.Sites = append(s.Sites, site)
 		}
 	}
+}
+
+func (s *Store) constructSearchParameters(incoming map[string]string) ([4]bool, [4]string) {
+	activated := [4]bool{}
+	query := [4]string{}
+	for index, value := range UrlComponents {
+		input, ok := incoming[value]
+		activated[index] = ok
+		if ok {
+			query[index] = input
+		} else {
+			query[index] = ""
+		}
+	}
+	query[PositionSiteHost] = strings.TrimSuffix(query[PositionSiteHost], "/")
+	return activated, query
+}
+
+func (s *Store) Get(incoming map[string]string) *Site {
+	activated, query := s.constructSearchParameters(incoming)
+	for _, site := range s.Sites {
+		if site.IsAMatch(activated, query) {
+			return site
+		}
+	}
+	return nil
 }

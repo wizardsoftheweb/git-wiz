@@ -8,4 +8,6 @@ func main() {
 	// for _, site := range store.Sites {
 	// 	fmt.Println(site)
 	// }
+	// site := store.Get(map[string]string{"host": "api.*.com"})
+	// fmt.Println(site)
 }
