@@ -57,6 +57,9 @@ func (s *Store) Load() {
 		if "" == url {
 			continue
 		}
-		s.Sites = append(s.Sites, NewSite(url))
+		site := NewSite(url)
+		if nil != site {
+			s.Sites = append(s.Sites, site)
+		}
 	}
 }
