@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"os"
 	"runtime"
 	"testing"
@@ -15,6 +16,7 @@ type BaseSuite struct {
 	workingDirectory        string
 	currentFilename         string
 	currentWorkingDirectory string
+	errorMessage            string
 	command                 *cobra.Command
 	args                    []string
 }
@@ -26,11 +28,15 @@ func (s *BaseSuite) SetUpSuite(c *C) {
 	s.workingDirectory = c.MkDir()
 	_ = os.Chdir(s.workingDirectory)
 	_, s.currentFilename, _, _ = runtime.Caller(0)
+	s.errorMessage = "shared file error"
 	s.command = &cobra.Command{}
 }
 
 func (s *BaseSuite) TearDownSuite(c *C) {
 	_ = os.Chdir(s.currentWorkingDirectory)
+}
+func (s *BaseSuite) brokenPathTidier(input ...string) (string, error) {
+	return "", errors.New(s.errorMessage)
 }
 
 type CommonSuite struct {
