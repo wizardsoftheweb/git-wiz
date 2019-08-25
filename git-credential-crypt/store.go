@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-var UrlComponents = []string{"protocol", "username", "password", "host"}
+var UrlComponents = []string{"protocol", "username", "password", "host", "path"}
 
 var DefaultStoreFileLocations = [][]string{
 	{"~", ".git-credentials"},
@@ -79,6 +79,7 @@ func (s *Store) constructSearchParameters(incoming map[string]string) ([SiteNumb
 		}
 	}
 	query[PositionSiteHost] = strings.TrimSuffix(query[PositionSiteHost], "/")
+	query[PositionSitePath] = strings.TrimSuffix(query[PositionSitePath], "/")
 	return activated, query
 }
 

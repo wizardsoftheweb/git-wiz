@@ -96,5 +96,9 @@ func (s *SiteSuite) TestDoesItWork(c *C) {
 	c.Assert(site.doesItWork(), Equals, false)
 	site.Host = "cool.beans"
 	c.Assert(site.doesItWork(), Equals, true)
+}
 
+func (s *SiteSuite) TestIsPathOn(c *C) {
+	s.site.Protocol = "tcp"
+	c.Assert(s.site.isPathOn(), Equals, false)
 }

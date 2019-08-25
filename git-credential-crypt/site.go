@@ -41,6 +41,10 @@ func NewSite(url string) *Site {
 	return nil
 }
 
+func (s *Site) isPathOn() bool {
+	return strings.Contains(s.Protocol, "http") && DoPathsMatter()
+}
+
 func (s *Site) decodeComponent(value string) string {
 	decoded, _ := url.QueryUnescape(value)
 	return decoded
@@ -88,7 +92,7 @@ func (s *Site) parseUrl(components []string) {
 
 func (s *Site) IsAMatch(activated [SiteNumberOfProperties]bool, query [SiteNumberOfProperties]string) bool {
 	for index, active := range activated {
-		if int(PositionSitePassword) == index {
+		if int(PositionSitePassword) == index || (int(PositionSitePath) == index && !DoPathsMatter()) {
 			continue
 		}
 		if active {
