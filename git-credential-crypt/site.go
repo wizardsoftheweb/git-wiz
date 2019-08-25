@@ -10,8 +10,7 @@ var PatternSiteEntry = regexp.MustCompile(`^\s*(.*?)(://)(.*):(.*)@(.*)\s*$`)
 type MatchPositionSite int
 
 const (
-	PositionSiteFull MatchPositionSite = iota
-	PositionSiteProtocol
+	PositionSiteProtocol MatchPositionSite = iota + 1
 	PositionSiteUsername
 	PositionSitePassword
 	PositionSiteHost
