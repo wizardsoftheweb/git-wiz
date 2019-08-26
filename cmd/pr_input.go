@@ -18,10 +18,12 @@ func prepCow(words string) string {
 func compileSuggestedPrBody() *GitHubPrRequest {
 	discovery := CompletePrDiscovery()
 	return &GitHubPrRequest{
-		Title:               discovery.assumedCurrentBranch,
-		Base:                discovery.assumedCurrentBranch,
-		Head:                discovery.suggestedHead,
-		Body:                "",
+		Title: discovery.assumedCurrentBranch,
+		Base:  discovery.assumedCurrentBranch,
+		Head:  discovery.suggestedHead,
+		Body: "The tool that was used to automatically generate this PR " +
+			"doesn't do bodies yet and the author of this has neglected to " +
+			"update this via the GUI.",
 		MaintainerCanModify: true,
 	}
 }
@@ -64,14 +66,14 @@ func approvePrHead(suggestedHead string) string {
 	)
 }
 
-func createPrBody() string {
+func createPrBody(suggestedBody string) string {
 	return approveOneLineItem(
 		"Please enter a short description of this PR.\n\nUntil wiz "+
 			"is built to load from files, the GH GUI is still, "+
 			"unfortunately, the best place to draft your PR body.\n\n"+
 			"Hitting return ends the body so keep it short. ¯\\_(ツ)_/¯",
 		"Body",
-		"",
+		suggestedBody,
 	)
 }
 
