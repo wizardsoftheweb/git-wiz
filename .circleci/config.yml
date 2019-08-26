@@ -36,9 +36,9 @@ jobs:
           command: |
             build/git-wiz --version
       - persist_to_workspace:
-          root: .
+          root: build
           paths:
-            - build
+            - git-wiz
   publish-github-release:
     executor: go
     steps:
@@ -48,6 +48,7 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
+            git-wiz --version
             VERSION=${CIRCLE_TAG}
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./build/
 
