@@ -56,7 +56,10 @@ workflows:
 
   main:
     jobs:
-      - test
+      - test:
+          filters:
+            tags:
+              only: /.*/
       - build:
           requires:
             - test
