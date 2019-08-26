@@ -1,10 +1,15 @@
 version: 2
-jobs:
-  build:
+
+executor:
+  go:
     docker:
       # specify the version
       - image: circleci/golang:1.12
-    working_directory: /go/src/github.com/wizardsoftheweb/git-wiz
+    working_directory: /tmp
+
+jobs:
+  test:
+    executor: go
     steps:
       - run: mkdir /tmp/cov
       - run: go get github.com/mattn/goveralls
@@ -12,3 +17,13 @@ jobs:
       - run: go get -v -t -d ./...
       - run: go test -v ./... -cover -race -coverprofile=/tmp/cov/coverage.out
       - run: goveralls -coverprofile=/tmp/cov/coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
+#  github-release:
+#    executor: go
+#    requires:
+#      - test
+#    filters:
+#      branches:
+#        ignore: /.*/
+#      tags:
+#        only: /^\d+\.\d+\.\d+$/
+#    steps:
