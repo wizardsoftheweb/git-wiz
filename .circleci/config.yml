@@ -73,8 +73,8 @@ workflows:
 #            tags:
 #              only: /.*/
       - build:
-          requires:
-            - test
+#          requires:
+#            - test
           filters:
             branches:
               only: /.*/
