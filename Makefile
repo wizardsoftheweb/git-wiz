@@ -22,9 +22,10 @@ clean:
 	@rm -rf ./build
 
 build-version:
-	@mkdir -p build
-	go build -i -v -o build/${OUT} -ldflags="-X ${PKG}/cmd.PackageVersion=${VERSION}" ${PKG}
+	go build -i -v -o "build/${BINARY_NAME}" -ldflags="-X ${PKG}/cmd.PackageVersion=${VERSION}" ${PKG}
 
 build: clean build-version
 
+
 crossbuild: clean windows_386 windows_amd64 linux_386 linux_amd64 darwin_amd64
+
