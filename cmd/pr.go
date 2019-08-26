@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -13,8 +15,11 @@ var prCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		rawPr := compileSuggestedPrBody()
 		approvedPr := loopUntilPrItemsAreApproved(rawPr)
-		fmt.Println(approvedPr)
-		// sharePr(rawPr)
+		repoOwner := os.Getenv(EnvVariableThatHoldsMyRepoOwner)
+		repoName := os.Getenv(EnvVariableThatHoldsMyRepoName)
+		prRequestBody, _ := json.Marshal(approvedPr)
+		prResponse := createPullRequest(repoOwner, repoName, prRequestBody)
+		fmt.Println(prResponse)
 	},
 }
 
