@@ -15,6 +15,10 @@ func compileSuggestedPrBody() *GitHubPrRequest {
 	}
 }
 
+func approvePrTitle(suggestedTitle string) {
+
+}
+
 func sharePr(pr *GitHubPrRequest) {
 	fmt.Println(pr)
 }
