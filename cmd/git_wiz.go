@@ -26,3 +26,9 @@ var GitWizCmd = &cobra.Command{
 	Short:   "i have no idea what im doing",
 	Run:     HelpOnly,
 }
+
+func whereErrorsGoToDie(err error) {
+	if nil != err {
+		panic(err)
+	}
+}
