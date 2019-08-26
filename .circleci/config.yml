@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 executor:
   go:
@@ -27,3 +27,10 @@ jobs:
 #      tags:
 #        only: /^\d+\.\d+\.\d+$/
 #    steps:
+
+workflows:
+  version: 2
+
+  main:
+    jobs:
+      - test
