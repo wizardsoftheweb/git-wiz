@@ -81,7 +81,7 @@ func loopUntilPrItemsAreApproved(request *GitHubPrRequest) *GitHubPrRequest {
 	request.Title = approvePrTitle(request.Title)
 	request.Base = approvePrBase(request.Base)
 	request.Head = approvePrHead(request.Head)
-	request.Body = createPrBody()
+	request.Body = createPrBody(request.Body)
 	approval := approveOneLineItem(
 		"If you need to make any changes, enter 'yes'. Anything "+
 			"other than 'yes' is interpreted as approval and will POST this "+
