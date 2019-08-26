@@ -31,7 +31,8 @@ jobs:
       - run:
           name: "Install dependencies and compile"
           command: |
-            go get -v ./...
+            go get ./... github.com/spf13/cobra
+            go get -u -v ./...
             make build
             make crossbuild
       - run:
