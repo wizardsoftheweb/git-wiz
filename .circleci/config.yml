@@ -53,6 +53,7 @@ jobs:
             build/git-wiz --version
             go get github.com/tcnksm/ghr
             VERSION=${CIRCLE_TAG}
+            mv build/git-wiz build/git-wiz_${VERSION}_linux_amd64
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -soft ${VERSION} ./build/
 
 workflows:
