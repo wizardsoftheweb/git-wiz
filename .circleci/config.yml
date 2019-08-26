@@ -32,7 +32,7 @@ jobs:
           name: "Install dependencies and compile"
           command: |
             go get -v ./...
-            go get -tags windows
+            # go get -tags windows
             go get -tags darwin
             make build
             make crossbuild
