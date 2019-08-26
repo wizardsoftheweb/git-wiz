@@ -33,6 +33,7 @@ jobs:
           command: |
             go get -v -t -d ./...
             make build
+            make crossbuild
       - run:
           name: "Verify binary"
           command: |
