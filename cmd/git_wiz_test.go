@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -29,4 +30,15 @@ func (s *GitWizSuite) TestExecute(c *C) {
 	err := Execute()
 	c.Assert(err, IsNil)
 	*GitWizCmd = *oldGitWizCmd
+}
+
+func (s *GitWizSuite) TestWhereErrorsGoToDie(c *C) {
+	s.errorMessage = "qqq"
+	c.Assert(
+		func() {
+			whereErrorsGoToDie(errors.New(s.errorMessage))
+		},
+		PanicMatches,
+		s.errorMessage,
+	)
 }

@@ -15,6 +15,7 @@ type BaseSuite struct {
 	workingDirectory        string
 	currentFilename         string
 	currentWorkingDirectory string
+	errorMessage            string
 	command                 *cobra.Command
 	args                    []string
 }
