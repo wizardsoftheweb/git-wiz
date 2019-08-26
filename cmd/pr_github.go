@@ -1,5 +1,9 @@
 package cmd
 
+import (
+	"fmt"
+)
+
 // https://developer.github.com/v3/pulls/#input
 // These docs are courtesy of the API documentation.
 type GitHubPrRequest struct {
@@ -26,16 +30,28 @@ type GitHubPrRequest struct {
 
 // https://developer.github.com/v3/pulls/review_requests/#input
 // These docs are courtesy of the API documentation.
-type ReviewRequest struct {
+type GithubReviewRequest struct {
 	// An array of user logins that will be requested.
 	Reviewers []string `json:"reviewers"`
 	// An array of team slugs that will be requested.
 	TeamReviewers []string `json:"reviewers"`
 }
 
-// https://developer.github.com/v3/repos/#parameters-6
-// These docs are courtesy of the API documentation.
-type ListContributorsRequest struct {
-	// Set to 1 or true to include anonymous contributors in results.
-	Anon string `json:"anon"`
+// GET  /repos/:owner/:repo/collaborators
+// POST /repos/:owner/:repo/pulls
+// POST /repos/:owner/:repo/pulls/:pull_number/reviews
+
+func getCollaboratorList(owner, repo string) []byte {
+	resource := fmt.Sprintf("repos/%s/%s/collaborators", owner, repo)
+	return getResource(resource, nil)
+}
+
+func createPullRequest(owner, repo string, requestBody []byte) []byte {
+	resource := fmt.Sprintf("repos/%s/%s/pulls", owner, repo)
+	return getResource(resource, requestBody)
+}
+
+func requestPrReview(owner, repo, pullNumber string, requestBody []byte) []byte {
+	resource := fmt.Sprintf("repos/%s/%s/pulls/%s/reviews", owner, repo, pullNumber)
+	return getResource(resource, requestBody)
 }
