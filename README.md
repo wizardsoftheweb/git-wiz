@@ -23,7 +23,9 @@ go get -u ./... github.com/wizardsoftheweb/git-wiz
 
 ### Without `go`
 
-Unless you have friends that use `git-wiz` that will also send you a compiled binary, I think it might be currently impossible to install `git-wiz` without `go` because I don't currently ship a binary. That's actually a really interesting question and I don't know enough about that side of Golang to say one way or the other. You'd certainly have to go through a lot of trouble figuring out how to compile and install it without `go`. That sounds like a challenge someone somewhere might find fun. I dunno. Coders are weird. 
+Check [the release page](https://github.com/wizardsoftheweb/git-wiz/releases) for a binary that might work for you.
+
+Unless you have friends that use `git-wiz` that will also send you a compiled binary that isn't there, I think it might be currently impossible to install `git-wiz` without `go` for platforms I don't currently compile for. That's actually a really interesting question and I don't know enough about that side of Golang to say one way or the other. You'd certainly have to go through a lot of trouble figuring out how to compile and install it without `go`. That sounds like a challenge someone somewhere might find fun. I dunno. Coders are weird. 
 
 ## Tools currently in `git-wiz` even if they might be ready
 
