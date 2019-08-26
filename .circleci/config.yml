@@ -39,7 +39,7 @@ jobs:
           root: .
           paths:
             - build
-  github-release:
+  publish-github-release:
     executor: go
     steps:
       - attach_workspace:
