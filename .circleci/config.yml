@@ -1,5 +1,6 @@
 version: 2.1
 
+
 executors:
   go:
     docker:
@@ -36,10 +37,16 @@ jobs:
           name: "Verify binary"
           command: |
             build/git-wiz --version
+      - persist_to_workspace:
+          root: build
+          paths:
+            - git-wiz
   publish-github-release:
     # Publish compiled binaries to GitHub
     executor: go
     steps:
+      - attach_workspace:
+          at: ./build
       - run:
           name: "Publish Release on GitHub"
           command: |
