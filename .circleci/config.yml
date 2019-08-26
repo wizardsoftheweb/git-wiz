@@ -1,11 +1,17 @@
 version: 2.1
 
+references:
+  workspace_root: &workspace_root
+    /go/src/github.com/wizardsoftheweb
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
 executors:
   go:
     docker:
-      # specify the version
       - image: circleci/golang:1.12
-    working_directory: /go/src/github.com/wizardsoftheweb/git-wiz
+    working_directory: *workspace_root
 
 jobs:
   test:
@@ -36,26 +42,22 @@ jobs:
       - run:
           name: "Verify binary"
           command: |
-            pwd
-            ls -alh
             build/git-wiz --version
       - persist_to_workspace:
-          root: build
+          root: *workspace_root
           paths:
-            - git-wiz
+            - ./git-wiz
   publish-github-release:
     # Publish compiled binaries to GitHub
     executor: go
     steps:
       - attach_workspace:
-          at: .
+          at: ./git-wiz
       - run:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            pwd
-            ls -alh
-            git-wiz --version
+            buil/git-wiz --version
             VERSION=${CIRCLE_TAG}
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./build/
 
