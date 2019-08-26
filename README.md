@@ -13,7 +13,7 @@ I dunno; I just like building `git` tooling. This repo holds some experiments an
 
 If you just want the binary,
 ```shell-session
-go install ./... github.com/wizardsoftheweb/git-wiz
+go install -i ./... github.com/wizardsoftheweb/git-wiz
 ```
 
 If you want to play with it in your code (haven't tried that, tbh),
