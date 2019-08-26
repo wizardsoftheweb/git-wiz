@@ -16,6 +16,20 @@ jobs:
       - run: go get -v -t -d ./...
       - run: go test -v ./... -cover -race -coverprofile=.coverage.out
       - run: goveralls -coverprofile=.coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
+  build:
+    executor: go
+    filters:
+      tags:
+        only: /^\d+\.\d+\.\d+$/
+    steps:
+      - checkout
+      - run: go get -v -t -d ./...
+      - run: make build
+      - run: git-wiz --version
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
 #  github-release:
 #    executor: go
 #    requires:
