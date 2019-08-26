@@ -9,16 +9,6 @@ import (
 	"os"
 )
 
-const EnvVariableThatHoldsMyPat = "GH_DEV_PAT"
-const EnvVariableThatHoldsMyGhUser = "GH_USERNAME"
-const EnvVariableThatHoldsMyRepoOwner = "GH_USERNAME"
-const EnvVariableThatHoldsMyRepoName = "GH_REPO"
-
-// GET  /
-// GET  /repos/:owner/:repo/collaborators
-// POST /repos/:owner/:repo/pulls
-// POST /repos/:owner/:repo/pulls/:pull_number/reviews
-
 func getBaseUrl() string {
 	return "https://api.github.com"
 }
@@ -31,13 +21,14 @@ type HttpClient interface {
 	Do(request *http.Request) (*http.Response, error)
 }
 
-func createNewRequest(resource string, buf *bytes.Buffer) *http.Request {
+func createNewRequest(resource string, requestBody []byte) *http.Request {
 	var request *http.Request
 	var err error
-	if nil == buf {
+	if nil == requestBody {
+		fmt.Println(buildRoute(resource))
 		request, err = http.NewRequest("GET", buildRoute(resource), nil)
 	} else {
-		request, err = http.NewRequest("POST", buildRoute(resource), buf)
+		request, err = http.NewRequest("POST", buildRoute(resource), bytes.NewBuffer(requestBody))
 	}
 	whereErrorsGoToDie(err)
 	request.Header.Set("Content-Type", "application/json")
@@ -62,9 +53,9 @@ func executeRequest(client HttpClient, request *http.Request) (*http.Response, [
 	return response, body
 }
 
-func getResource(client HttpClient, resource string) []byte {
-	var buf *bytes.Buffer
-	request := createNewRequest(resource, buf)
+func getResource(resource string, requestBody []byte) []byte {
+	client := &http.Client{}
+	request := createNewRequest(resource, requestBody)
 	_, body := executeRequest(client, request)
 	return body
 }
