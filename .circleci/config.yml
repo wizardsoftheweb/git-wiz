@@ -11,12 +11,11 @@ jobs:
   test:
     executor: go
     steps:
-      - run: mkdir /tmp/cov
       - run: go get github.com/mattn/goveralls
       - checkout
       - run: go get -v -t -d ./...
-      - run: go test -v ./... -cover -race -coverprofile=/tmp/cov/coverage.out
-      - run: goveralls -coverprofile=/tmp/cov/coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
+      - run: go test -v ./... -cover -race -coverprofile=.coverage.out
+      - run: goveralls -coverprofile=.coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
 #  github-release:
 #    executor: go
 #    requires:
