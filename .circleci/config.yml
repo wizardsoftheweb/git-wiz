@@ -75,7 +75,7 @@ workflows:
             - test
           filters:
             branches:
-              ignore: /.*/
+              only: /.*/
             tags:
               only: /^\d+\.\d+\.\d+$/
       - publish-github-release:
