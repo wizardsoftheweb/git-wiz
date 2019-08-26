@@ -8,13 +8,24 @@ import (
 	"strings"
 )
 
+// This is the name of an environment variable that contains a personal access
+// that can be used to edit repos
 const EnvVariableThatHoldsMyPat = "GH_DEV_PAT"
+
+// This is the name of an environment variable that contains the username
+// associated with the PAT
 const EnvVariableThatHoldsMyGhUser = "GH_USERNAME"
+
+// This is the name of an environment variable that contains the name of the
+// the owner of the repo that will be PR'd into. This will eventually be input.
 const EnvVariableThatHoldsMyRepoOwner = "GH_OWNER"
+
+// This is the name of an environment variable that contains the name of the
+// the repo that will be PR'd into. This will eventually be input.
 const EnvVariableThatHoldsMyRepoName = "GH_REPO"
 
-// Created the same thing to hold the discovery work
-// I should probably separate this out by provider but I'm not there yet
+// This holds all the local info that will be used to suggest a payload for the
+// API call to build the PR
 type PrDiscovery struct {
 	// If it's there, this becomes much easier.
 	hasGitFlow bool
@@ -27,6 +38,8 @@ type PrDiscovery struct {
 	suggestedBase string
 }
 
+// This holds all the local info that will be used to suggest a payload for the
+// API call to ask for reviews
 type ReviewDiscovery struct {
 	// Contributors from local VCS
 	localSuggestedReviewers []string
@@ -102,6 +115,8 @@ func (w *PrDiscovery) discoverBase() {
 	}
 }
 
+// This convenience function builds a new PrDiscovery instance and runs through
+// all its methods to generate suggestions for the PR payload
 func CompletePrDiscovery() *PrDiscovery {
 	discovery := PrDiscovery{}
 	discovery.checkForTools()
@@ -121,6 +136,8 @@ func (r *ReviewDiscovery) discoverLocalShortList() {
 	}
 }
 
+// This pulls a list of all the local contributors on a project to use as a
+// simple suggestion for adding reviewers
 func (r *ReviewDiscovery) discoverRemoteShortlist(owner, repo string) {
 	body := getCollaboratorList(owner, repo)
 	var collaborators map[string]interface{}
@@ -128,6 +145,8 @@ func (r *ReviewDiscovery) discoverRemoteShortlist(owner, repo string) {
 	fmt.Println(collaborators)
 }
 
+// This pulls a list of all the remote contributors on a project to use as a
+// simple suggestion for adding reviewers
 func CompleteReviewDiscovery(owner, repo string) []string {
 	discovery := ReviewDiscovery{}
 	discovery.discoverLocalShortList()

@@ -37,20 +37,27 @@ type GithubReviewRequest struct {
 	TeamReviewers []string `json:"reviewers"`
 }
 
-// GET  /repos/:owner/:repo/collaborators
-// POST /repos/:owner/:repo/pulls
-// POST /repos/:owner/:repo/pulls/:pull_number/reviews
-
+// This sends a request to the following endpoint to discover users that have
+// collaborated on this repo
+//
+// 		GET  /repos/:owner/:repo/collaborators
 func getCollaboratorList(owner, repo string) []byte {
 	resource := fmt.Sprintf("repos/%s/%s/collaborators", owner, repo)
 	return getResource(resource, nil)
 }
 
+// This sends a request to the following endpoint to create a PR
+//
+// 		POST /repos/:owner/:repo/pulls
 func createPullRequest(owner, repo string, requestBody []byte) []byte {
 	resource := fmt.Sprintf("repos/%s/%s/pulls", owner, repo)
 	return getResource(resource, requestBody)
 }
 
+// This sends a request to the following endpoint to request a list of reviewers
+// on the PR
+//
+// 		// POST /repos/:owner/:repo/pulls/:pull_number/reviews
 func requestPrReview(owner, repo, pullNumber string, requestBody []byte) []byte {
 	resource := fmt.Sprintf("repos/%s/%s/pulls/%s/reviews", owner, repo, pullNumber)
 	return getResource(resource, requestBody)
