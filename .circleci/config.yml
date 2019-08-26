@@ -31,7 +31,7 @@ jobs:
       - run:
           name: "Install dependencies and compile"
           command: |
-            go get -v -t -d ./...
+            go get -v ./...
             make build
             make crossbuild
       - run:
