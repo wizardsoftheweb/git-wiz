@@ -1,5 +1,10 @@
 # `git-wiz`
 
+[![CircleCI](https://img.shields.io/circleci/build/github/wizardsoftheweb/git-wiz/dev)](https://circleci.com/gh/wizardsoftheweb/git-wiz/tree/dev)
+[![Coverage Status](https://img.shields.io/coveralls/github/wizardsoftheweb/git-wiz/dev)](https://coveralls.io/github/wizardsoftheweb/git-wiz?branch=dev)
+[![GoDoc](https://godoc.org/github.com/wizardsoftheweb/git-wiz?status.svg)](https://godoc.org/github.com/wizardsoftheweb/git-wiz)
+
+
 I dunno; I just like building `git` tooling. This repo holds some experiments and (will eventually) exposes those far enough long via a binary that can be dropped in and discovered by `git`.
 
 ## Installing `git-wiz`
@@ -8,7 +13,7 @@ I dunno; I just like building `git` tooling. This repo holds some experiments an
 
 If you just want the binary,
 ```shell-session
-go install ./... github.com/wizardsoftheweb/git-wiz
+go install ./... github.com/wizardsofthew eb/git-wiz
 ```
 
 If you want to play with it in your code (haven't tried that, tbh),
