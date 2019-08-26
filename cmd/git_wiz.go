@@ -6,7 +6,7 @@ import (
 
 // The is the git-wiz version only. Other components may have
 // different versions.
-var PackageVersion = "0.0.0"
+var PackageVersion = "undefined"
 
 // The verbosity flag is a count flag, ie the more there are the more verbose
 // it gets.

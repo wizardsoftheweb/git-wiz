@@ -1,6 +1,8 @@
 package main
 
-import "github.com/wizardsoftheweb/git-wiz/cmd"
+import (
+	"github.com/wizardsoftheweb/git-wiz/cmd"
+)
 
 func main() {
 	err := cmd.Execute()
