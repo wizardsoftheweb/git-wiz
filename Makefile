@@ -10,3 +10,5 @@ build-version:
 	go build -i -v -o build/${OUT} -ldflags="-X ${PKG}/cmd.PackageVersion=${VERSION}" ${PKG}
 
 build: clean build-version
+
+.PHONY: clean build-version build
