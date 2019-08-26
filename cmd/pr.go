@@ -19,7 +19,7 @@ var prCmd = &cobra.Command{
 		repoName := os.Getenv(EnvVariableThatHoldsMyRepoName)
 		prRequestBody, _ := json.Marshal(approvedPr)
 		prResponse := createPullRequest(repoOwner, repoName, prRequestBody)
-		fmt.Println(prResponse)
+		fmt.Println(string(prResponse))
 	},
 }
 
