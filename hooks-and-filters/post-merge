@@ -1,0 +1,11 @@
+#!/bin/bash
+# vim:syntax=sh
+
+# Right now this prunes merged branches
+# The only time it's really effective is after a pull. Every pull triggers a
+# merge locally, so this is the closest we can get.
+
+# This cleans local branches
+git branch --merged | grep -vE '(\*|dev|master)' | xargs -n 1 git branch -d
+# This cleans remote branches
+git branch -r --merged | grep -vE '(\*|dev|master)' | sed 's/origin\///' | xargs -n 1 git push --delete origin
