@@ -22,7 +22,7 @@ jobs:
       - checkout
       - run: go get -v -t -d ./...
       - run: make build
-      - run: git-wiz --version
+      - run: build/git-wiz --version
       - persist_to_workspace:
           root: .
           paths:
