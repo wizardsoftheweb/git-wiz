@@ -9,6 +9,7 @@ executors:
 
 jobs:
   test:
+    # Run all tests
     executor: go
     steps:
       - checkout
@@ -23,6 +24,7 @@ jobs:
             go get github.com/mattn/goveralls
             goveralls -coverprofile=.coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
   build:
+    # Build the project
     executor: go
     steps:
       - checkout
@@ -40,6 +42,7 @@ jobs:
           paths:
             - git-wiz
   publish-github-release:
+    # Publish compiled binaries to GitHub
     executor: go
     steps:
       - attach_workspace:
