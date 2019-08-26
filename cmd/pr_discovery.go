@@ -24,7 +24,7 @@ type PrDiscovery struct {
 	// could be suspect.
 	assumedCurrentBranch string
 	// Theoretically tracked in git-flow
-	suggestedHead string
+	suggestedBase string
 }
 
 type ReviewDiscovery struct {
@@ -82,7 +82,7 @@ func (w *PrDiscovery) discoverCurrentBranch() {
 // regularly), you can find its base in the config file. If you're not using
 // GitFlow or it's been cleared, you can find the base branch on your own time.
 // http://bbs.bugcode.cn/t/7634
-func (w *PrDiscovery) discoverHead() {
+func (w *PrDiscovery) discoverBase() {
 	if w.hasGitFlow {
 		action := exec.Command(
 			"git",
@@ -97,7 +97,7 @@ func (w *PrDiscovery) discoverHead() {
 		)
 		result, err := action.CombinedOutput()
 		if nil == err {
-			w.suggestedHead = strings.TrimSpace(string(result))
+			w.suggestedBase = strings.TrimSpace(string(result))
 		}
 	}
 }
@@ -107,7 +107,7 @@ func CompletePrDiscovery() *PrDiscovery {
 	discovery.checkForTools()
 	discovery.discoverGitConfigDirectory()
 	discovery.discoverCurrentBranch()
-	discovery.discoverHead()
+	discovery.discoverBase()
 	return &discovery
 }
 

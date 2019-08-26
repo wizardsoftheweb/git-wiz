@@ -19,8 +19,8 @@ func compileSuggestedPrBody() *GitHubPrRequest {
 	discovery := CompletePrDiscovery()
 	return &GitHubPrRequest{
 		Title: discovery.assumedCurrentBranch,
-		Base:  discovery.assumedCurrentBranch,
-		Head:  discovery.suggestedHead,
+		Base:  discovery.suggestedBase,
+		Head:  discovery.assumedCurrentBranch,
 		Body: "The tool that was used to automatically generate this PR " +
 			"doesn't do bodies yet and the author of this has neglected to " +
 			"update this via the GUI.",
@@ -48,9 +48,9 @@ func approvePrTitle(suggestedTitle string) string {
 
 func approvePrBase(suggestedBase string) string {
 	return approveOneLineItem(
-		"The branch you're currently working on was selected as the "+
-			"base branch for the PR. If you need to change that, please "+
-			"enter a new name and hit return when you're finished.",
+		"If you're using GitFlow, your prefix branch's base "+
+			"was selected as the PR base. If you're not using GitFlow you'll "+
+			"have to do manual discovery like a barbarian",
 		"Base Branch",
 		suggestedBase,
 	)
@@ -58,9 +58,9 @@ func approvePrBase(suggestedBase string) string {
 
 func approvePrHead(suggestedHead string) string {
 	return approveOneLineItem(
-		"If you're using GitFlow, your prefix branch's base "+
-			"was selected as the PR head. If you're not using GitFlow you'll "+
-			"have to do manual discovery like a barbarian",
+		"The branch you're currently working on was selected as the "+
+			"base branch for the PR. If you need to change that, please "+
+			"enter a new name and hit return when you're finished.",
 		"Head Branch",
 		suggestedHead,
 	)
