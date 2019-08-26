@@ -1,4 +1,4 @@
-package main
+package git_credentials_store
 
 func main() {
 	// CollectGitConfig()
