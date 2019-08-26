@@ -13,7 +13,6 @@ import (
 func TestRootMain(t *testing.T) { TestingT(t) }
 
 type MainSuite struct {
-	BaseSuite
 	errorMessage string
 }
 
