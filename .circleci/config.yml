@@ -1,14 +1,85 @@
-version: 2
-jobs:
-  build:
+version: 2.1
+
+
+executors:
+  go:
     docker:
-      # specify the version
       - image: circleci/golang:1.12
     working_directory: /go/src/github.com/wizardsoftheweb/git-wiz
+
+jobs:
+  test:
+    # Run all tests
+    executor: go
     steps:
-      - run: mkdir /tmp/cov
-      - run: go get github.com/mattn/goveralls
       - checkout
-      - run: go get -v -t -d ./...
-      - run: go test -v ./... -cover -race -coverprofile=/tmp/cov/coverage.out
-      - run: goveralls -coverprofile=/tmp/cov/coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
+      - run:
+          name: "Install dependencies and run tests"
+          command: |
+            go get -v -t -d ./...
+            go test -v ./... -cover -race -coverprofile=.coverage.out
+      - run:
+          name: "Export coverage data to Coveralls"
+          command: |
+            go get github.com/mattn/goveralls
+            goveralls -coverprofile=.coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
+  build:
+    # Build the project
+    executor: go
+    steps:
+      - checkout
+      - run:
+          name: "Install dependencies and compile"
+          command: |
+            go get -v ./...
+            make build
+      - run:
+          name: "Verify binary"
+          command: |
+            build/git-wiz --version
+      - persist_to_workspace:
+          root: build
+          paths:
+            - git-wiz
+  publish-github-release:
+    # Publish compiled binaries to GitHub
+    executor: go
+    steps:
+      - attach_workspace:
+          at: ./build
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            build/git-wiz --version
+            go get github.com/tcnksm/ghr
+            VERSION=${CIRCLE_TAG}
+            mv build/git-wiz build/git-wiz_${VERSION}_linux_amd64
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -soft ${VERSION} ./build/
+
+workflows:
+  version: 2
+
+  main:
+    jobs:
+#      - test:
+#          filters:
+#            branches:
+#              only: /.*/
+#            tags:
+#              only: /.*/
+      - build:
+#          requires:
+#            - test
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+$/
+      - publish-github-release:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+$/

@@ -46,7 +46,7 @@ var GitWizCmd = &cobra.Command{
 		"have my doubts about that last claim.",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if ShowVersion {
-			cmd.Printf("%x version %s\n", cmd.Use, PackageVersion)
+			cmd.Printf("%s version %s\n", cmd.Use, PackageVersion)
 			cmd.TraverseChildren = false
 			cmd.Run = func(cmd *cobra.Command, args []string) {}
 		}
