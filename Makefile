@@ -3,9 +3,9 @@ PKG := github.com/wizardsoftheweb/git-wiz
 VERSION := $(shell git describe --always --long --dirty)
 
 clean:
-	@rm -rf ./${OUT}
+	@rm -rf ./build
 
 build-version:
-	go build -i -v -o ${OUT} -ldflags="-X ${PKG}/cmd.PackageVersion=${VERSION}" ${PKG}
+	go build -i -v -o build/${OUT} -ldflags="-X ${PKG}/cmd.PackageVersion=${VERSION}" ${PKG}
 
 build: clean build-version
