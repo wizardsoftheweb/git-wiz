@@ -50,10 +50,10 @@ jobs:
       - run:
           name: "Publish Release on GitHub"
           command: |
-            go get github.com/tcnksm/ghr
+            # go get github.com/tcnksm/ghr
             build/git-wiz --version
-            VERSION=${CIRCLE_TAG}
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./build/
+            # VERSION=${CIRCLE_TAG}
+            # ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./build/
 
 workflows:
   version: 2
@@ -79,6 +79,6 @@ workflows:
             - build
           filters:
             branches:
-              ignore: /.*/
+              only: /.*/
             tags:
               only: /^\d+\.\d+\.\d+$/
