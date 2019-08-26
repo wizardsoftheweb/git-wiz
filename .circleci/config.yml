@@ -64,12 +64,12 @@ workflows:
 
   main:
     jobs:
-      - test:
-          filters:
-            branches:
-              only: /.*/
-            tags:
-              only: /.*/
+#      - test:
+#          filters:
+#            branches:
+#              only: /.*/
+#            tags:
+#              only: /.*/
       - build:
           requires:
             - test
