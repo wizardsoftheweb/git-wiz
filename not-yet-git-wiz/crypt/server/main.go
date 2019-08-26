@@ -8,7 +8,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	pb "github.com/wizardsoftheweb/git-wiz/crypt/proto"
+	pb "github.com/wizardsoftheweb/git-wiz/not-yet-git-wiz/crypt/proto"
 )
 
 const (
