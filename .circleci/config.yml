@@ -42,7 +42,7 @@ jobs:
       - persist_to_workspace:
           root: build
           paths:
-            - build/git-wiz
+            - git-wiz
   publish-github-release:
     # Publish compiled binaries to GitHub
     executor: go
