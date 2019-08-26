@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -10,7 +12,9 @@ var prCmd = &cobra.Command{
 	Long:  "Just GH for now. This may or may not ever be finished.",
 	Run: func(cmd *cobra.Command, args []string) {
 		rawPr := compileSuggestedPrBody()
-		sharePr(rawPr)
+		approvedPr := loopUntilPrItemsAreApproved(rawPr)
+		fmt.Println(approvedPr)
+		// sharePr(rawPr)
 	},
 }
 
