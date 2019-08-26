@@ -7,6 +7,7 @@ import (
 	"github.com/chzyer/readline"
 )
 
+// Passing in a string gets a cow saying that string
 func prepCow(words string) string {
 	say, _ := cowsay.Say(
 		cowsay.Phrase(words),
@@ -15,6 +16,7 @@ func prepCow(words string) string {
 	return say
 }
 
+// Use the discovered local information to suggest the contents of a PR payload.
 func compileSuggestedPrBody() *GitHubPrRequest {
 	discovery := CompletePrDiscovery()
 	return &GitHubPrRequest{
@@ -28,6 +30,9 @@ func compileSuggestedPrBody() *GitHubPrRequest {
 	}
 }
 
+// This function is used by all user approvals that only require one line of
+// input. It prints instructions to the user, prefills the entry with the
+// provided suuggestion, and returns the approved string.
 func approveOneLineItem(instructions, promptTitle, suggestedItem string) string {
 	fmt.Println(prepCow(instructions))
 	input, _ := readline.New(fmt.Sprintf("%s> ", promptTitle))
@@ -36,6 +41,7 @@ func approveOneLineItem(instructions, promptTitle, suggestedItem string) string 
 	return result
 }
 
+// Get user approval for the PR title
 func approvePrTitle(suggestedTitle string) string {
 	return approveOneLineItem(
 		"The name of your current branch was chosen "+
@@ -46,6 +52,7 @@ func approvePrTitle(suggestedTitle string) string {
 	)
 }
 
+// Get user approval for the PR base branch (where it's going)
 func approvePrBase(suggestedBase string) string {
 	return approveOneLineItem(
 		"If you're using GitFlow, your prefix branch's base "+
@@ -56,6 +63,7 @@ func approvePrBase(suggestedBase string) string {
 	)
 }
 
+// Get user approval for the PR head branch (where it's coming from)
 func approvePrHead(suggestedHead string) string {
 	return approveOneLineItem(
 		"The branch you're currently working on was selected as the "+
@@ -66,6 +74,7 @@ func approvePrHead(suggestedHead string) string {
 	)
 }
 
+// Create a description of the PR
 func createPrBody(suggestedBody string) string {
 	return approveOneLineItem(
 		"Please enter a short description of this PR.\n\nUntil wiz "+
@@ -77,6 +86,9 @@ func createPrBody(suggestedBody string) string {
 	)
 }
 
+// Present all suggestions to the user one at a time. It checks at the end to
+// see if any changes need to be made. If there are, the function loops back
+// over itself.
 func loopUntilPrItemsAreApproved(request *GitHubPrRequest) *GitHubPrRequest {
 	request.Title = approvePrTitle(request.Title)
 	request.Base = approvePrBase(request.Base)
@@ -95,10 +107,8 @@ func loopUntilPrItemsAreApproved(request *GitHubPrRequest) *GitHubPrRequest {
 	return request
 }
 
-func sharePr(pr *GitHubPrRequest) {
-	fmt.Println(pr)
-}
-
+// This is unused
+// It will compile the payload for requesting reviewers on the PR
 func compileSuggestedReviewBody(owner, repo string) *GithubReviewRequest {
 	reviewers := CompleteReviewDiscovery(owner, repo)
 	return &GithubReviewRequest{

@@ -8,6 +8,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// prCmd generates a PR using information about the current directory state.
+// All of its content goes through final approval with the user before being
+// posted to GH.
 var prCmd = &cobra.Command{
 	Use:   "pr",
 	Short: "PRs through the CLI where your git flow already is",
