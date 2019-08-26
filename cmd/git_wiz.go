@@ -31,7 +31,11 @@ var GitWizCmd = &cobra.Command{
 	Use:     "git-wiz",
 	Version: PackageVersion,
 	Short:   "i have no idea what im doing",
-	Run:     HelpOnly,
+	Long: "wiz addresses some QoL issues I have with some of the tools I " +
+		"use, provides an easier medium to consume some of my git " +
+		"experiments, and might hopefully provide value to someone else. I " +
+		"have my doubts about that last claim.",
+	Run: HelpOnly,
 }
 
 // This is a catch-all error handler that kills the program when an
