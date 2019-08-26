@@ -58,12 +58,16 @@ workflows:
     jobs:
       - test:
           filters:
+            branches:
+              only: /.*/
             tags:
               only: /.*/
       - build:
           requires:
             - test
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^\d+\.\d+\.\d+$/
       - publish-github-release:
