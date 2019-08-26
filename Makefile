@@ -15,8 +15,8 @@ linux_386:
 linux_amd64:
 	env GOOS=linux GOARCH=amd64 go build -i -v -o build/${BINARY_NAME}_${SEMVER}_linux_amd64 -ldflags="-X ${PKG}/cmd.PackageVersion=${VERSION}" ${PKG}
 
-darwin_amd64:
-	env GOOS=darwin GOARCH=amd64 go build -i -v -o build/${BINARY_NAME}_${SEMVER}_darwin_amd64 -ldflags="-X ${PKG}/cmd.PackageVersion=${VERSION}" ${PKG}
+#darwin_amd64:
+#	env GOOS=darwin GOARCH=amd64 go build -i -v -o build/${BINARY_NAME}_${SEMVER}_darwin_amd64 -ldflags="-X ${PKG}/cmd.PackageVersion=${VERSION}" ${PKG}
 
 clean:
 	@rm -rf ./build
@@ -27,5 +27,5 @@ build-version:
 build: clean build-version
 
 
-crossbuild: clean linux_386 linux_amd64 darwin_amd64
+crossbuild: clean linux_386 linux_amd64
 
