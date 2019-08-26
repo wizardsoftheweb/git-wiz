@@ -1,17 +1,10 @@
 version: 2.1
 
-references:
-  workspace_root: &workspace_root
-    /go/src/github.com/wizardsoftheweb
-  attach_workspace: &attach_workspace
-    attach_workspace:
-      at: *workspace_root
-
 executors:
   go:
     docker:
       - image: circleci/golang:1.12
-    working_directory: *workspace_root
+    working_directory: /go/src/github.com/wizardsoftheweb/git-wiz
 
 jobs:
   test:
@@ -43,16 +36,10 @@ jobs:
           name: "Verify binary"
           command: |
             build/git-wiz --version
-      - persist_to_workspace:
-          root: *workspace_root
-          paths:
-            - ./git-wiz
   publish-github-release:
     # Publish compiled binaries to GitHub
     executor: go
     steps:
-      - attach_workspace:
-          at: ./git-wiz
       - run:
           name: "Publish Release on GitHub"
           command: |
