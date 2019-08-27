@@ -184,10 +184,96 @@ There's a very convenient way to list branches that have been merged with our wo
 ```shell-session
 $ git branch --all --merged
   dev
-* feature/create-simple-hooks
+* feature/subfeature-branch
+  feature/root-branch
+  feature/old-deletable-feature
   master
   remotes/origin/dev
+  remotes/origin/feature/subfeature-branch
+  remotes/origin/feature/root-branch
+  remotes/origin/feature/old-deletable-feature
   remotes/origin/master
+  remotes/other-remote/dev
+  remotes/other-remote/feature/subfeature-branch
+  remotes/other-remote/feature/root-branch
+  remotes/other-remote/feature/old-deletable-feature
+  remotes/other-remote/master
+  remotes/third/remote/time/dev
+  remotes/third/remote/time/feature/subfeature-branch
+  remotes/third/remote/time/feature/root-branch
+  remotes/third/remote/time/feature/old-deletable-feature
+  remotes/third/remote/time/master
 ```
 
-This shows that the current `dev` and `master` branches, both local and remote, have been merged into my active branch. 
+This shows that the current `dev` and `master` branches, both local and remote, have been merged into my active branch. There are also some other branches, local and remote, that have been merged but not deleted. We don't want to delete the entire list; we want to only delete the cruft. This means we have to be very careful with what we chose to delete, especially on the remote(s).
+
+
+Since we're following `gitflow` we know everything that's been merged into its `dev` branch (other than `master`) can be deleted. Anything newer than the `dev` branch might be an active feature touched by someone else on the team. Locally it could be another feature that's been tabled for whatever reason.
+
+Locally that's very easy.
+
+```shell-session
+$ git branch --merged=dev
+  dev
+  feature/old-deletable-feature
+  master
+$ git branch --merged=dev | grep -vE 'dev|master'
+  feature/old-deletable-feature
+$ git branch --merged=dev | grep -vE 'dev|master' | xargs -n 1 git branch -d 
+Deleted branch feature/old-deletable-feature (was 8a3b292).
+```
+
+With a single remote, it's still fairly easy but needs more steps.
+
+```shell-session
+$ git branch --remote --merged=dev \
+    | grep origin \
+    | grep -vE 'origin/(dev|master)$' \
+    | sed 's@origin/@origin @' \
+    | xargs -n 2 bash -c 'echo git push $0  --delete $1'
+git push origin --delete feature/another-deletable-feature
+```
+With multiple remotes, it seems harder but just requires some some judicious variable creation before piping. Since remotes can be named like branches or refs (ie like folders) we can't make assumption about their final naming.
+
+```shell-session
+$ git remote \
+    | xargs -n 1 bash -c '\
+        REMOTE=$0; \
+        BRANCHES=$( \
+            git branch --remote --merged="$REMOTE"/dev \
+                | grep $REMOTE \
+                | sed "s@$REMOTE/@@" \
+                | grep -vE " (master|dev)$" \
+        ); \
+        [ -z "${BRANCHES[@]}" ] || echo ${BRANCHES[@]} \
+            | xargs -n 1 bash -c  "echo git push $REMOTE --delete "'
+git push origin --delete feature/another-deletable-feature
+git push other-remote --delete feature/another-deletable-feature
+git push third/remote/time --delete feature/another-deletable-feature
+```
+
+```shell-session
+$ git branch --all --merged
+  dev
+* feature/subfeature-branch
+  feature/root-branch
+  master
+  remotes/origin/dev
+  remotes/origin/feature/subfeature-branch
+  remotes/origin/feature/root-branch
+  remotes/origin/master
+  remotes/other-remote/dev
+  remotes/other-remote/feature/subfeature-branch
+  remotes/other-remote/feature/root-branch
+  remotes/other-remote/master
+  remotes/third/remote/time/dev
+  remotes/third/remote/time/feature/subfeature-branch
+  remotes/third/remote/time/feature/root-branch
+  remotes/third/remote/time/master
+```
+
+Note that, in order to run the many-remote commands, you'll need to remove that last `echo` so the command is executed instead of printed.
+
+After all that was said and done, we still have a fairly large number of branches live. This can't be managed programmatically (unless you set some rules up first). In each setting, `dev`, `master`, and `feature/root-branch` are in `feature/subfeature-branch`. We need `dev` and `master` as the sources of truth. The whole point of running a subfeature is merge it back in, so we can't nuke `feature/subfeature-branch`. If we didn't have those requirements, we could manually delete things (like who needs two separate mirrors of `origin`?).
+
+
