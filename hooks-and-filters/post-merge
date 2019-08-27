@@ -1,0 +1,39 @@
+#!/bin/bash
+# vim:syntax=sh
+
+# Right now this prunes merged branches
+# The only time it's really effective is after a pull. Every pull triggers a
+# merge locally, so this is the closest we can get.
+
+# Ensure we have the most up-to-date info
+git fetch --all --prune
+
+DEVELOP=dev
+
+# This is a list of protected branches
+PROTECTED=( "$DEVELOP" master )
+JOINED=$( printf "|%s" "${PROTECTED[@]}" )
+JOINED=${JOINED:1}
+
+# This tidies local branches
+LOCAL_BRANCHES=( $(git branch --merged="$DEVELOP" | grep -vE "($JOINED)" ) )
+for branch in "${LOCAL_BRANCHES[@]}"; do
+    git branch -d "$branch"
+done
+
+# This tidies remote branches
+# Get all the remotes and loop over them
+REMOTES=( $(git remote) )
+for remote in "${REMOTES[@]}"; do
+    # Select branches from the remote that meet our criteria
+    REMOTE_BRANCHES=( $(
+        git branch --remote --merged="$remote/$DEVELOP" \
+            | grep "$remote" \
+            | sed "s@$remote/@@" \
+            | grep -vE " ($JOINED)$"
+    ) )
+    # Delete every branch we've found
+    for branch in "${REMOTE_BRANCHES[@]}"; do
+        git push "$remote" --delete "$branch"
+    done
+done
