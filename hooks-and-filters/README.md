@@ -275,5 +275,3 @@ $ git branch --all --merged
 Note that, in order to run the many-remote commands, you'll need to remove that last `echo` so the command is executed instead of printed.
 
 After all that was said and done, we still have a fairly large number of branches live. This can't be managed programmatically (unless you set some rules up first). In each setting, `dev`, `master`, and `feature/root-branch` are in `feature/subfeature-branch`. We need `dev` and `master` as the sources of truth. The whole point of running a subfeature is merge it back in, so we can't nuke `feature/subfeature-branch`. If we didn't have those requirements, we could manually delete things (like who needs two separate mirrors of `origin`?).
-
-
