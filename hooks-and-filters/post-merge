@@ -5,7 +5,33 @@
 # The only time it's really effective is after a pull. Every pull triggers a
 # merge locally, so this is the closest we can get.
 
-# This cleans local branches
-git branch --merged | grep -vE '(\*|dev|master)' | xargs -n 1 git branch -d
-# This cleans remote branches
-git branch -r --merged | grep -vE '(\*|dev|master)' | sed 's/origin\///' | xargs -n 1 git push --delete origin
+# Ensure we have the most up-to-date info
+git fetch --all --prune
+
+# This is a list of protected branches
+PROTECTED=( dev master )
+JOINED=$( printf "|%s" "${PROTECTED[@]}" )
+JOINED=${JOINED:1}
+
+# This tidies local branches
+LOCAL_BRANCHES=( $(git branch --merged=dev | grep -vE "($JOINED)" ) )
+for branch in "${LOCAL_BRANCHES[@]}"; do
+    git branch -d "$branch"
+done
+
+# This tidies remote branches
+# Get all the remotes and loop over them
+REMOTES=( $(git remote) )
+for remote in "${REMOTES[@]}"; do
+    # Select branches from the remote that meet our criteria
+    REMOTE_BRANCHES=( $(
+        git branch --remote --merged="$remote/dev" \
+            | grep "$remote" \
+            | sed "s@$remote/@@" \
+            | grep -vE " ($JOINED)$"
+    ) )
+    # Delete every branch we've found
+    for branch in "${REMOTE_BRANCHES[@]}"; do
+        git push "$remote" --delete "$branch"
+    done
+done
